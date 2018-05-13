@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class LocalMusicManagerApp extends Application {
@@ -21,6 +22,8 @@ public class LocalMusicManagerApp extends Application {
                 view.update();
             }
         });
+
+
         primaryStage.setTitle("Local Music Manager");
         primaryStage.setResizable(true);
         primaryStage.setScene(new Scene(view, 615, 500));

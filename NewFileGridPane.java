@@ -25,8 +25,6 @@ public class NewFileGridPane extends GridPane {
         selectedFilePath.setEditable(false);
         selectedFilePath.setDisable(true);
         format = new ComboBox<ReleaseFormat>();
-
-        format.getItems().setAll(ReleaseFormat.values());
         format.setDisable(true);
         format.setMinWidth(100);
 

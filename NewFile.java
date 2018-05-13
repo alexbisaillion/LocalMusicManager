@@ -6,20 +6,10 @@ import java.io.File;
 public class NewFile {
     private NewFileGridPane view;
     private File selectedFile;
+    private ReleaseFormat format;
 
     public NewFile() {
         view = new NewFileGridPane();
-
-        view.getBrowse().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                selectedFile = view.getChooser().showOpenDialog(null);
-                if(selectedFile != null) {
-                    view.getSelectedFilePath().setText(selectedFile.getPath());
-                    view.getFormat().setDisable(false);
-                }
-            }
-        });
     }
 
     public NewFileGridPane getView() {
@@ -30,4 +20,23 @@ public class NewFile {
         return selectedFile;
     }
 
+    public ReleaseFormat getFormat() {
+        return format;
+    }
+
+    public void setSelectedFile(File selectedFile) {
+        this.selectedFile = selectedFile;
+    }
+
+    public void setFormat(ReleaseFormat format) {
+        this.format = format;
+    }
+
+    public String getExtension() {
+        if(selectedFile != null) {
+            String fileName = selectedFile.getName();
+            return fileName.substring(fileName.lastIndexOf("."));
+        }
+        return null;
+    }
 }

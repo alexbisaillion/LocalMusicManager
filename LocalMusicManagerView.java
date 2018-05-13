@@ -1,8 +1,11 @@
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class LocalMusicManagerView extends GridPane {
@@ -44,6 +47,7 @@ public class LocalMusicManagerView extends GridPane {
         finish = new Button("ADD TO LIBRARY");
         finish.setMinWidth(390);
         bottom.add(finish, 1, 0, 2, 1);
+        finish.setDisable(true);
         add(bottom, 0, 2);
     }
 
@@ -58,8 +62,50 @@ public class LocalMusicManagerView extends GridPane {
         }
         add(middle, 0, 1);
 
-        for(NewFile nf: model) {
+        if(model.size() == 0) {
+            finish.setDisable(true);
+        }
+        else {
+            finish.setDisable(false);
+            for (NewFile nf : model) {
+                if (nf.getSelectedFile() == null || nf.getFormat() == null) {
+                    finish.setDisable(true);
+                    break;
+                }
+            }
+        }
 
+        for(NewFile nf: model) {
+            nf.getView().getBrowse().setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    File selectedFile = nf.getView().getChooser().showOpenDialog(null);
+                    if(selectedFile != null) {
+                        nf.setSelectedFile(selectedFile);
+                        nf.getView().getSelectedFilePath().setText(selectedFile.getPath());
+                        nf.getView().getFormat().setDisable(false);
+                        if(!nf.getExtension().equals(".zip") && !nf.getExtension().equals(".rar") && !nf.getExtension().equals(".7z")) {
+                            nf.getView().getFormat().getItems().setAll(ReleaseFormat.Single, ReleaseFormat.Unreleased);
+                        }
+                        else {
+                            nf.getView().getFormat().getItems().setAll(ReleaseFormat.values());
+                        }
+                    }
+                    System.out.println(nf.getExtension());
+                    update();
+                }
+            });
+
+            nf.getView().getFormat().setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    if(nf.getView().getFormat().getValue() != null) {
+                        ReleaseFormat format = nf.getView().getFormat().getValue();
+                        nf.setFormat(format);
+                    }
+                    update();
+                }
+            });
         }
     }
 }
