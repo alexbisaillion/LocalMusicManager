@@ -31,7 +31,7 @@ public class LocalMusicManagerView extends GridPane {
         middle = new GridPane();
         middle.setVgap(10);
         for(NewFile nf: model) {
-            middle.add(nf.getUiView(), 0, middle.getChildren().size());
+            middle.add(nf.getView(), 0, middle.getChildren().size());
         }
         add(middle, 0, 1);
 
@@ -54,7 +54,7 @@ public class LocalMusicManagerView extends GridPane {
         middle = new GridPane();
         middle.setVgap(10);
         for(NewFile nf: model) {
-            middle.add(nf.getUiView(), 0, middle.getChildren().size());
+            middle.add(nf.getView(), 0, middle.getChildren().size());
         }
         add(middle, 0, 1);
 
