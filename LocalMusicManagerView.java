@@ -91,7 +91,6 @@ public class LocalMusicManagerView extends GridPane {
                             nf.getView().getFormat().getItems().setAll(ReleaseFormat.values());
                         }
                     }
-                    System.out.println(nf.getExtension());
                     update();
                 }
             });

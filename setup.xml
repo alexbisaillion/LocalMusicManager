@@ -1,0 +1,39 @@
+<?xml version= "1.0"?>
+<directories>
+    <formatDirectories>
+        <directory>
+            <format>Album</format>
+            <path>C:\Users\abisa_000\Documents\Full Library\Albums</path>
+        </directory>
+        <directory>
+            <format>Mixtape</format>
+            <path>C:\Users\abisa_000\Documents\Full Library\Mixtapes</path>
+        </directory>
+        <directory>
+            <format>EP</format>
+            <path>C:\Users\abisa_000\Documents\Full Library\EPs</path>
+        </directory>
+        <directory>
+            <format>Single</format>
+            <path>C:\Users\abisa_000\Documents\Full Library\Commercially Released Singles</path>
+        </directory>
+        <directory>
+            <format>Soundtrack</format>
+            <path>C:\Users\abisa_000\Documents\Full Library\Soundtracks</path>
+        </directory>
+        <directory>
+            <format>Unreleased</format>
+            <path>C:\Users\abisa_000\Documents\Full Library\Organized Unreleased</path>
+        </directory>
+    </formatDirectories>
+    <conversionDirectories>
+        <directory>
+            <fileType>.m4a</fileType>
+            <path>G:\AAC</path>
+        </directory>
+        <directory>
+            <fileType>.mp3</fileType>
+            <path>G:\MP3</path>
+        </directory>
+    </conversionDirectories>
+</directories>

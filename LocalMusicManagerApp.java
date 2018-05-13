@@ -23,6 +23,15 @@ public class LocalMusicManagerApp extends Application {
             }
         });
 
+        view.getFinish().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for(NewFile nf: model) {
+                    System.out.println(nf);
+                }
+            }
+        });
+
 
         primaryStage.setTitle("Local Music Manager");
         primaryStage.setResizable(true);

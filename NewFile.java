@@ -39,4 +39,9 @@ public class NewFile {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return(selectedFile.getPath() + ", " + format);
+    }
 }
