@@ -1,0 +1,39 @@
+<?xml version= "1.0"?>
+<directories>
+    <formatDirectory>
+        <format>Album</format>
+        <path>C:\Users\abisa_000\Documents\Full Library\Albums</path>
+    </formatDirectory>
+    <formatDirectory>
+        <format>Mixtape</format>
+        <path>C:\Users\abisa_000\Documents\Full Library\Mixtapes</path>
+    </formatDirectory>
+    <formatDirectory>
+        <format>EP</format>
+        <path>C:\Users\abisa_000\Documents\Full Library\EPs</path>
+    </formatDirectory>
+    <formatDirectory>
+        <format>Single</format>
+        <path>C:\Users\abisa_000\Documents\Full Library\Commercially Released Singles</path>
+    </formatDirectory>
+    <formatDirectory>
+        <format>Soundtrack</format>
+        <path>C:\Users\abisa_000\Documents\Full Library\Soundtracks</path>
+    </formatDirectory>
+    <formatDirectory>
+        <format>Unreleased</format>
+        <path>C:\Users\abisa_000\Documents\Full Library\Organized Unreleased</path>
+    </formatDirectory>
+    <conversionDirectory>
+        <fileType>m4a</fileType>
+        <path>G:\AAC</path>
+    </conversionDirectory>
+    <conversionDirectory>
+        <fileType>mp3</fileType>
+        <path>G:\MP3</path>
+    </conversionDirectory>
+    <deviceDirectory>
+        <device>Phone</device>
+        <path>This PC\G4\SanDisk SD card\AAC</path>
+    </deviceDirectory>
+</directories>
