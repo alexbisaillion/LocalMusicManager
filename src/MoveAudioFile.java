@@ -12,7 +12,7 @@ public class MoveAudioFile {
     public static Path moveSingle(File source, Path destination) throws Exception {
         AudioFile file = AudioFileIO.read(source);
         Tag tag = file.getTag();
-        Path artistDirectory = Paths.get(destination.toString() + "\\" + tag.getFirst(FieldKey.ARTIST));
+        Path artistDirectory = Paths.get(destination.toString() + "\\" + tag.getFirst(FieldKey.ALBUM_ARTIST));
         if (!Files.exists(artistDirectory)) {
             Files.createDirectory(artistDirectory);
         }
@@ -21,7 +21,7 @@ public class MoveAudioFile {
     public static Path moveUnreleased(File source, Path destination) throws Exception {
         AudioFile file = AudioFileIO.read(source);
         Tag tag = file.getTag();
-        Path artistDirectory = Paths.get(destination.toString() + "\\" + tag.getFirst(FieldKey.ARTIST));
+        Path artistDirectory = Paths.get(destination.toString() + "\\" + tag.getFirst(FieldKey.ALBUM_ARTIST));
         if (!Files.exists(artistDirectory)) {
             Files.createDirectory(artistDirectory);
         }

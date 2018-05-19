@@ -1,8 +1,11 @@
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ExtractFromCompressed {
     public static boolean extractFromZip(File source, Path destination) {
+        Path tempDestination = Paths.get(destination.toString() + "\\" + source.getName().substring(0, source.getName().lastIndexOf(".")));
+        System.out.println(tempDestination);
         System.out.println("ZIP" + source.getName());
         
         return true;
