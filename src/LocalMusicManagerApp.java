@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -54,7 +53,20 @@ public class LocalMusicManagerApp extends Application {
                             ExtractFromCompressed.extractFrom7z(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
                             break;
                         default:
-                            System.out.println(nf.getFormat());
+                            if(nf.getFormat() == ReleaseFormat.Single) {
+                                try {
+                                    MoveAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else {
+                                try {
+                                    MoveAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
                     }
                 }
             }
