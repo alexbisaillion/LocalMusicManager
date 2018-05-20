@@ -18,11 +18,11 @@ public class SortArchiveFile {
         if(!Files.exists(tempDestination)) {
             Files.createDirectory(tempDestination);
         }
-        FileInputStream inputStream = new FileInputStream(source);
+        ArchiveInputStream archiveInputStream = null;
         try {
-            ArchiveInputStream archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream(archiveType, inputStream);
-            ArchiveEntry entry;
-            while((entry = archiveInputStream.getNextEntry()) != null) {
+            archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream(archiveType, new FileInputStream(source));
+            ArchiveEntry entry = archiveInputStream.getNextEntry();
+            while(entry != null) {
                 if(isAudioFile(entry)) {
                     String fileName = entry.getName().substring(entry.getName().lastIndexOf("/") + 1);
                     Path target = Paths.get(tempDestination.toString() + "\\" + fileName);
@@ -36,15 +36,16 @@ public class SortArchiveFile {
                     bufferedOutputStream.flush();
                     bufferedOutputStream.close();
                 }
+                entry = archiveInputStream.getNextEntry();
             }
         }
         catch(Exception e) {
             e.printStackTrace();
         }
         finally {
-            if(inputStream != null) {
+            if(archiveInputStream != null) {
                 try {
-                    inputStream.close();
+                    archiveInputStream.close();
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
