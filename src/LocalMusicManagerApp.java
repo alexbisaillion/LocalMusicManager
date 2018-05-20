@@ -3,6 +3,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -44,25 +45,37 @@ public class LocalMusicManagerApp extends Application {
                 for(NewFile nf: model) {
                     switch(nf.getExtension()) {
                         case ".zip":
-                            ExtractFromCompressed.extractFromZip(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                            try {
+                                SortArchiveFile.extract(nf.getSelectedFile(), formatPaths.get(nf.getFormat()), ArchiveStreamFactory.ZIP);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             break;
                         case ".rar":
-                            ExtractFromCompressed.extractFromRar(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                            try {
+                                SortArchiveFile.extractRar(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             break;
                         case ".7z":
-                            ExtractFromCompressed.extractFrom7z(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                            try {
+                                SortArchiveFile.extract(nf.getSelectedFile(), formatPaths.get(nf.getFormat()), ArchiveStreamFactory.SEVEN_Z);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             break;
                         default:
                             if(nf.getFormat() == ReleaseFormat.Single) {
                                 try {
-                                    MoveAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                    SortAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
                             else {
                                 try {
-                                    MoveAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                    SortAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class MoveAudioFile {
+public class SortAudioFile {
     public static Path moveSingle(File source, Path destination) throws Exception {
         AudioFile file = AudioFileIO.read(source);
         Tag tag = file.getTag();
