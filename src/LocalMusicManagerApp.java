@@ -46,7 +46,12 @@ public class LocalMusicManagerApp extends Application {
                     switch(nf.getExtension()) {
                         case ".zip":
                             try {
-                                SortArchiveFile.extract(nf.getSelectedFile(), formatPaths.get(nf.getFormat()), ArchiveStreamFactory.ZIP);
+                                Path p = SortArchiveFile.extract(nf.getSelectedFile(), formatPaths.get(nf.getFormat()), ArchiveStreamFactory.ZIP);
+                                if(p != null) {
+                                    System.out.println(SortArchiveFile.analyze(p));
+                                    System.out.println(SortArchiveFile.correct(p));
+                                    System.out.println(SortArchiveFile.move(p));
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
