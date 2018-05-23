@@ -121,11 +121,9 @@ public class SortArchiveFile {
                 AudioFile file = AudioFileIO.read(child);
                 Tag tag = file.getTag();
                 if(tag.getFirst(FieldKey.TITLE).contains(".com")) { //check for junk in the title
-                    System.out.println("hi");
                     faultDetected = true;
                 }
                 if(tag.getArtworkList().size() < 1) { //check for missing album art
-                    System.out.println("hi");
                     faultDetected = true;
                 }
                 if(tag.getFirst(FieldKey.YEAR).length() != 4) { //check for faulty date

@@ -73,14 +73,18 @@ public class LocalMusicManagerApp extends Application {
                         default:
                             if(nf.getFormat() == ReleaseFormat.Single) {
                                 try {
-                                    SortAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                    Path p = SortAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                    System.out.println(SortAudioFile.analyze(p));
+                                    System.out.println(SortAudioFile.correct(p));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
                             else {
                                 try {
-                                    SortAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                    Path p = SortAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                    System.out.println(SortAudioFile.analyze(p));
+                                    System.out.println(SortAudioFile.correct(p));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
