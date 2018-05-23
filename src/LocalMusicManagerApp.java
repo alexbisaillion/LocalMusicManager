@@ -25,11 +25,13 @@ public class LocalMusicManagerApp extends Application {
     public HashMap<ReleaseFormat, Path> formatPaths;
     public HashMap<String, Path> conversionPaths;
     public HashMap<String, Path> devicePaths;
+    public ArrayList<Path> sortedFiles;
 
     public void start(Stage primaryStage) {
         readSetupFile();
         model = new ArrayList<>();
         view = new LocalMusicManagerView(model);
+        sortedFiles = new ArrayList<>();
 
         view.getAddToQueue().setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -59,7 +61,14 @@ public class LocalMusicManagerApp extends Application {
                                     }
                                     System.out.println(SortArchiveFile.analyze(p));
                                     System.out.println(SortArchiveFile.correct(p));
-                                    System.out.println(SortArchiveFile.move(p));
+                                    p = SortArchiveFile.move(p);
+                                    File directory = p.toFile();
+                                    File[] files = directory.listFiles();
+                                    if(files != null) {
+                                        for (File f : files) {
+                                            sortedFiles.add(f.toPath());
+                                        }
+                                    }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -80,7 +89,14 @@ public class LocalMusicManagerApp extends Application {
                                     }
                                     System.out.println(SortArchiveFile.analyze(p));
                                     System.out.println(SortArchiveFile.correct(p));
-                                    System.out.println(SortArchiveFile.move(p));
+                                    p = SortArchiveFile.move(p);
+                                    File directory = p.toFile();
+                                    File[] files = directory.listFiles();
+                                    if(files != null) {
+                                        for (File f : files) {
+                                            sortedFiles.add(f.toPath());
+                                        }
+                                    }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -101,7 +117,14 @@ public class LocalMusicManagerApp extends Application {
                                     }
                                     System.out.println(SortArchiveFile.analyze(p));
                                     System.out.println(SortArchiveFile.correct(p));
-                                    System.out.println(SortArchiveFile.move(p));
+                                    p = SortArchiveFile.move(p);
+                                    File directory = p.toFile();
+                                    File[] files = directory.listFiles();
+                                    if(files != null) {
+                                        for (File f : files) {
+                                            sortedFiles.add(f.toPath());
+                                        }
+                                    }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -122,6 +145,7 @@ public class LocalMusicManagerApp extends Application {
                                     Path p = SortAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
                                     System.out.println(SortAudioFile.analyze(p));
                                     System.out.println(SortAudioFile.correct(p));
+                                    sortedFiles.add(p);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -140,11 +164,21 @@ public class LocalMusicManagerApp extends Application {
                                     Path p = SortAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
                                     System.out.println(SortAudioFile.analyze(p));
                                     System.out.println(SortAudioFile.correct(p));
+                                    sortedFiles.add(p);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
                     }
+                }
+            }
+        });
+
+        view.getAddToItunes().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for(Path p: sortedFiles) {
+                    System.out.println(p);
                 }
             }
         });

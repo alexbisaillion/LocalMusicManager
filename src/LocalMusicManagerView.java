@@ -17,6 +17,7 @@ public class LocalMusicManagerView extends GridPane {
     public GridPane bottom;
     private Button addToQueue;
     private Button finish;
+    private Button addToItunes;
 
     public LocalMusicManagerView(ArrayList<NewFile> m) {
         setHgap(10);
@@ -42,6 +43,7 @@ public class LocalMusicManagerView extends GridPane {
         //BOTTOM COMPONENTS
         bottom = new GridPane();
         bottom.setHgap(10);
+        bottom.setVgap(10);
         addToQueue = new Button("ADD TO QUEUE");
         addToQueue.setMinWidth(195);
         bottom.add(addToQueue, 0, 0, 1, 1);
@@ -49,11 +51,15 @@ public class LocalMusicManagerView extends GridPane {
         finish.setMinWidth(720);
         bottom.add(finish, 1, 0, 2, 1);
         finish.setDisable(true);
+        addToItunes = new Button("ADD TO iTUNES");
+        addToItunes.setMinWidth(925);
+        bottom.add(addToItunes, 0, 1, 3, 1);
         add(bottom, 0, 2);
     }
 
     public Button getAddToQueue() { return addToQueue; }
     public Button getFinish() { return finish; }
+    public Button getAddToItunes() { return addToItunes; }
 
     public void update() {
         middle = new GridPane();
