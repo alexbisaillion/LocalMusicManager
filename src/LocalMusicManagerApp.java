@@ -12,12 +12,15 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class LocalMusicManagerApp extends Application {
     public ArrayList<NewFile> model;
@@ -61,14 +64,7 @@ public class LocalMusicManagerApp extends Application {
                                     }
                                     System.out.println(SortArchiveFile.analyze(p));
                                     System.out.println(SortArchiveFile.correct(p));
-                                    p = SortArchiveFile.move(p);
-                                    File directory = p.toFile();
-                                    File[] files = directory.listFiles();
-                                    if(files != null) {
-                                        for (File f : files) {
-                                            sortedFiles.add(f.toPath());
-                                        }
-                                    }
+                                    sortedFiles.add(SortArchiveFile.move(p));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -89,14 +85,7 @@ public class LocalMusicManagerApp extends Application {
                                     }
                                     System.out.println(SortArchiveFile.analyze(p));
                                     System.out.println(SortArchiveFile.correct(p));
-                                    p = SortArchiveFile.move(p);
-                                    File directory = p.toFile();
-                                    File[] files = directory.listFiles();
-                                    if(files != null) {
-                                        for (File f : files) {
-                                            sortedFiles.add(f.toPath());
-                                        }
-                                    }
+                                    sortedFiles.add(SortArchiveFile.move(p));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -117,14 +106,7 @@ public class LocalMusicManagerApp extends Application {
                                     }
                                     System.out.println(SortArchiveFile.analyze(p));
                                     System.out.println(SortArchiveFile.correct(p));
-                                    p = SortArchiveFile.move(p);
-                                    File directory = p.toFile();
-                                    File[] files = directory.listFiles();
-                                    if(files != null) {
-                                        for (File f : files) {
-                                            sortedFiles.add(f.toPath());
-                                        }
-                                    }
+                                    sortedFiles.add(SortArchiveFile.move(p));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -177,8 +159,10 @@ public class LocalMusicManagerApp extends Application {
         view.getAddToItunes().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                for(Path p: sortedFiles) {
-                    System.out.println(p);
+                try {
+                    addToItunes();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -188,6 +172,27 @@ public class LocalMusicManagerApp extends Application {
         primaryStage.setResizable(true);
         primaryStage.setScene(new Scene(view, 945, 500));
         primaryStage.show();
+    }
+
+    public void addToItunes() throws IOException {
+        for(Path p: sortedFiles) {
+            String[] args  = {"python", "src/scripts/addToLibrary.py", p.toString()};
+            Process pro = Runtime.getRuntime().exec(args);
+            try {
+                pro.waitFor();
+                BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+                String line;
+                while((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+                br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
+                while((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void readSetupFile() {
