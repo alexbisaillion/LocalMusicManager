@@ -182,6 +182,54 @@ public class SortArchiveFile {
         }
         return changed;
     }
+    public static boolean changeArtist(Path location, String artist) throws Exception {
+        File directory = location.toFile();
+        File[] files = directory.listFiles();
+        boolean changed = false;
+        if(files != null) {
+            for (File child : files) {
+                AudioFile file = AudioFileIO.read(child);
+                Tag tag = file.getTag();
+                tag.setField(FieldKey.ARTIST, artist);
+                AudioFileIO.write(file);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    public static boolean changeAlbumArtist(Path location, String albumArtist) throws Exception {
+        File directory = location.toFile();
+        File[] files = directory.listFiles();
+        boolean changed = false;
+        if(files != null) {
+            for (File child : files) {
+                AudioFile file = AudioFileIO.read(child);
+                Tag tag = file.getTag();
+                tag.setField(FieldKey.ALBUM_ARTIST, albumArtist);
+                AudioFileIO.write(file);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    public static boolean changeGenre(Path location, String genre) throws Exception {
+        File directory = location.toFile();
+        File[] files = directory.listFiles();
+        boolean changed = false;
+        if(files != null) {
+            for (File child : files) {
+                AudioFile file = AudioFileIO.read(child);
+                Tag tag = file.getTag();
+                tag.setField(FieldKey.GENRE, genre);
+                AudioFileIO.write(file);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
     public static Path move(Path location) throws Exception {
         File directory = location.toFile();
         File[] files = directory.listFiles();

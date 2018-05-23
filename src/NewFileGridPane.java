@@ -9,6 +9,9 @@ public class NewFileGridPane extends GridPane {
     private FileChooser chooser;
     private TextField selectedFilePath;
     private ComboBox<ReleaseFormat> format;
+    private TextField artist;
+    private TextField albumArtist;
+    private TextField genre;
 
     public NewFileGridPane() {
         setHgap(10);
@@ -28,9 +31,24 @@ public class NewFileGridPane extends GridPane {
         format.setDisable(true);
         format.setMinWidth(100);
 
+        artist = new TextField();
+        artist.setPromptText("Artist");
+        artist.setMinWidth(100);
+
+        albumArtist = new TextField();
+        albumArtist.setPromptText("Album Artist");
+        albumArtist.setMinWidth(100);
+
+        genre = new TextField();
+        genre.setPromptText("Genre");
+        genre.setMinWidth(100);
+
         add(browse, 0, 0);
         add(selectedFilePath, 1, 0);
         add(format, 2, 0);
+        add(artist, 3, 0);
+        add(albumArtist, 4, 0);
+        add(genre, 5, 0);
     }
 
     public Button getBrowse() {
@@ -47,5 +65,17 @@ public class NewFileGridPane extends GridPane {
 
     public ComboBox<ReleaseFormat> getFormat() {
         return format;
+    }
+
+    public TextField getArtist() {
+        return artist;
+    }
+
+    public TextField getAlbumArtist() {
+        return albumArtist;
+    }
+
+    public TextField getGenre() {
+        return genre;
     }
 }

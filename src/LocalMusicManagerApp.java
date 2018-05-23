@@ -48,6 +48,15 @@ public class LocalMusicManagerApp extends Application {
                             try {
                                 Path p = SortArchiveFile.extract(nf.getSelectedFile(), formatPaths.get(nf.getFormat()), ArchiveStreamFactory.ZIP);
                                 if(p != null) {
+                                    if(nf.getNewArtistTag() != null) {
+                                        System.out.println(SortArchiveFile.changeArtist(p, nf.getNewArtistTag()));
+                                    }
+                                    if(nf.getNewAlbumArtistTag() != null) {
+                                        System.out.println(SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag()));
+                                    }
+                                    if(nf.getNewGenreTag() != null) {
+                                        System.out.println(SortArchiveFile.changeGenre(p, nf.getNewGenreTag()));
+                                    }
                                     System.out.println(SortArchiveFile.analyze(p));
                                     System.out.println(SortArchiveFile.correct(p));
                                     System.out.println(SortArchiveFile.move(p));
@@ -58,14 +67,42 @@ public class LocalMusicManagerApp extends Application {
                             break;
                         case ".rar":
                             try {
-                                SortArchiveFile.extractRar(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                Path p = SortArchiveFile.extractRar(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                if(p != null) {
+                                    if(nf.getNewArtistTag() != null) {
+                                        System.out.println(SortArchiveFile.changeArtist(p, nf.getNewArtistTag()));
+                                    }
+                                    if(nf.getNewAlbumArtistTag() != null) {
+                                        System.out.println(SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag()));
+                                    }
+                                    if(nf.getNewGenreTag() != null) {
+                                        System.out.println(SortArchiveFile.changeGenre(p, nf.getNewGenreTag()));
+                                    }
+                                    System.out.println(SortArchiveFile.analyze(p));
+                                    System.out.println(SortArchiveFile.correct(p));
+                                    System.out.println(SortArchiveFile.move(p));
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             break;
                         case ".7z":
                             try {
-                                SortArchiveFile.extract(nf.getSelectedFile(), formatPaths.get(nf.getFormat()), ArchiveStreamFactory.SEVEN_Z);
+                                Path p = SortArchiveFile.extract(nf.getSelectedFile(), formatPaths.get(nf.getFormat()), ArchiveStreamFactory.SEVEN_Z);
+                                if(p != null) {
+                                    if(nf.getNewArtistTag() != null) {
+                                        System.out.println(SortArchiveFile.changeArtist(p, nf.getNewArtistTag()));
+                                    }
+                                    if(nf.getNewAlbumArtistTag() != null) {
+                                        System.out.println(SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag()));
+                                    }
+                                    if(nf.getNewGenreTag() != null) {
+                                        System.out.println(SortArchiveFile.changeGenre(p, nf.getNewGenreTag()));
+                                    }
+                                    System.out.println(SortArchiveFile.analyze(p));
+                                    System.out.println(SortArchiveFile.correct(p));
+                                    System.out.println(SortArchiveFile.move(p));
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -73,6 +110,15 @@ public class LocalMusicManagerApp extends Application {
                         default:
                             if(nf.getFormat() == ReleaseFormat.Single) {
                                 try {
+                                    if(nf.getNewArtistTag() != null) {
+                                        System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
+                                    }
+                                    if(nf.getNewAlbumArtistTag() != null) {
+                                        System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
+                                    }
+                                    if(nf.getNewGenreTag() != null) {
+                                        System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
+                                    }
                                     Path p = SortAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
                                     System.out.println(SortAudioFile.analyze(p));
                                     System.out.println(SortAudioFile.correct(p));
@@ -82,6 +128,15 @@ public class LocalMusicManagerApp extends Application {
                             }
                             else {
                                 try {
+                                    if(nf.getNewArtistTag() != null) {
+                                        System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
+                                    }
+                                    if(nf.getNewAlbumArtistTag() != null) {
+                                        System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
+                                    }
+                                    if(nf.getNewGenreTag() != null) {
+                                        System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
+                                    }
                                     Path p = SortAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
                                     System.out.println(SortAudioFile.analyze(p));
                                     System.out.println(SortAudioFile.correct(p));
@@ -97,7 +152,7 @@ public class LocalMusicManagerApp extends Application {
 
         primaryStage.setTitle("Local Music Manager");
         primaryStage.setResizable(true);
-        primaryStage.setScene(new Scene(view, 615, 500));
+        primaryStage.setScene(new Scene(view, 945, 500));
         primaryStage.show();
     }
 

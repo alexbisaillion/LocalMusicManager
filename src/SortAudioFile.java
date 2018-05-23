@@ -72,6 +72,33 @@ public class SortAudioFile {
         return changed;
     }
 
+    public static boolean changeArtist(Path location, String artist) throws Exception {
+        File directory = location.toFile();
+        AudioFile file = AudioFileIO.read(directory);
+        Tag tag = file.getTag();
+        tag.setField(FieldKey.ARTIST, artist);
+        AudioFileIO.write(file);
+        return true;
+    }
+
+    public static boolean changeAlbumArtist(Path location, String albumArtist) throws Exception {
+        File directory = location.toFile();
+        AudioFile file = AudioFileIO.read(directory);
+        Tag tag = file.getTag();
+        tag.setField(FieldKey.ALBUM_ARTIST, albumArtist);
+        AudioFileIO.write(file);
+        return true;
+    }
+
+    public static boolean changeGenre(Path location, String genre) throws Exception {
+        File directory = location.toFile();
+        AudioFile file = AudioFileIO.read(directory);
+        Tag tag = file.getTag();
+        tag.setField(FieldKey.GENRE, genre);
+        AudioFileIO.write(file);
+        return true;
+    }
+
     public static Path moveSingle(File source, Path destination) throws Exception {
         AudioFile file = AudioFileIO.read(source);
         Tag tag = file.getTag();

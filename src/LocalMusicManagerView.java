@@ -3,6 +3,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
 import java.io.File;
@@ -45,7 +46,7 @@ public class LocalMusicManagerView extends GridPane {
         addToQueue.setMinWidth(195);
         bottom.add(addToQueue, 0, 0, 1, 1);
         finish = new Button("ADD TO LIBRARY");
-        finish.setMinWidth(390);
+        finish.setMinWidth(720);
         bottom.add(finish, 1, 0, 2, 1);
         finish.setDisable(true);
         add(bottom, 0, 2);
@@ -101,6 +102,36 @@ public class LocalMusicManagerView extends GridPane {
                     if(nf.getView().getFormat().getValue() != null) {
                         ReleaseFormat format = nf.getView().getFormat().getValue();
                         nf.setFormat(format);
+                    }
+                    update();
+                }
+            });
+
+            nf.getView().getArtist().setOnKeyReleased(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    if(nf.getView().getArtist().getText().length() > 0) {
+                        nf.setNewArtistTag(nf.getView().getArtist().getText());
+                    }
+                    update();
+                }
+            });
+
+            nf.getView().getAlbumArtist().setOnKeyReleased(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    if(nf.getView().getAlbumArtist().getText().length() > 0) {
+                        nf.setNewAlbumArtistTag(nf.getView().getAlbumArtist().getText());
+                    }
+                    update();
+                }
+            });
+
+            nf.getView().getGenre().setOnKeyReleased(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    if(nf.getView().getGenre().getText().length() > 0) {
+                        nf.setNewGenreTag(nf.getView().getGenre().getText());
                     }
                     update();
                 }
