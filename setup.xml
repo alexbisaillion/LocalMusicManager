@@ -25,15 +25,18 @@
         <path>C:\Users\abisa_000\Documents\Full Library\Organized Unreleased</path>
     </formatDirectory>
     <conversionDirectory>
-        <fileType>m4a</fileType>
+        <fileType>AAC</fileType>
         <path>G:\AAC</path>
     </conversionDirectory>
     <conversionDirectory>
-        <fileType>mp3</fileType>
+        <fileType>MP3</fileType>
         <path>G:\MP3</path>
     </conversionDirectory>
     <deviceDirectory>
         <device>Phone</device>
         <path>This PC\G4\SanDisk SD card\AAC</path>
     </deviceDirectory>
+    <iTunesDirectory>
+        <path>C:\Users\abisa_000\Music</path>
+    </iTunesDirectory>
 </directories>

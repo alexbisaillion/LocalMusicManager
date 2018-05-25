@@ -18,6 +18,8 @@ public class LocalMusicManagerView extends GridPane {
     private Button addToQueue;
     private Button finish;
     private Button addToItunes;
+    private Button convertToAAC;
+    private Button convertToMP3;
 
     public LocalMusicManagerView(ArrayList<NewFile> m) {
         setHgap(10);
@@ -52,14 +54,31 @@ public class LocalMusicManagerView extends GridPane {
         bottom.add(finish, 1, 0, 2, 1);
         finish.setDisable(true);
         addToItunes = new Button("ADD TO iTUNES");
+        addToItunes.setDisable(true);
         addToItunes.setMinWidth(925);
         bottom.add(addToItunes, 0, 1, 3, 1);
+        convertToAAC = new Button("CONVERT TO AAC");
+        convertToAAC.setDisable(true);
+        convertToAAC.setMinWidth(925);
+        bottom.add(convertToAAC, 0,2, 3, 1);
+        convertToMP3 = new Button("CONVERT To MP3");
+        convertToMP3.setDisable(true);
+        convertToMP3.setMinWidth(925);
+        bottom.add(convertToMP3, 0, 3, 3, 1);
         add(bottom, 0, 2);
     }
 
     public Button getAddToQueue() { return addToQueue; }
     public Button getFinish() { return finish; }
     public Button getAddToItunes() { return addToItunes; }
+
+    public Button getConvertToAAC() {
+        return convertToAAC;
+    }
+
+    public Button getConvertToMP3() {
+        return convertToMP3;
+    }
 
     public void update() {
         middle = new GridPane();

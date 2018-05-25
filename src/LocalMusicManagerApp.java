@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -16,8 +17,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -29,6 +32,8 @@ public class LocalMusicManagerApp extends Application {
     public HashMap<String, Path> conversionPaths;
     public HashMap<String, Path> devicePaths;
     public ArrayList<Path> sortedFiles;
+    public Path iTunesDirectory;
+    public ArrayList<Path> oldFolders;
 
     public void start(Stage primaryStage) {
         readSetupFile();
@@ -153,6 +158,7 @@ public class LocalMusicManagerApp extends Application {
                             }
                     }
                 }
+                view.getAddToItunes().setDisable(false);
             }
         });
 
@@ -162,6 +168,37 @@ public class LocalMusicManagerApp extends Application {
                 try {
                     addToItunes();
                 } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                view.getConvertToAAC().setDisable(false);
+                view.getConvertToMP3().setDisable(false);
+            }
+        });
+
+        view.getConvertToAAC().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    setEncoder("AAC Encoder");
+                    convert();
+                    //relocate("AAC");
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        view.getConvertToMP3().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    //setEncoder("MP3 Encoder");
+                    //convert();
+                    //relocate("MP3");
+                    relocate("AAC");
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -195,9 +232,72 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
+    public void convert() throws IOException {
+        oldFolders = new ArrayList<>();
+        File directory = iTunesDirectory.toFile();
+        File[] files = directory.listFiles();
+        if(files != null) {
+            for (File child : files) {
+                oldFolders.add(child.toPath());
+            }
+        }
+        for(Path p: sortedFiles) {
+            String[] args  = {"python", "src/scripts/convert.py", p.toString()};
+            Process pro = Runtime.getRuntime().exec(args);
+            try {
+                pro.waitFor();
+                BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+                String line;
+                while((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+                br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
+                while((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void relocate(String conversionType) throws IOException {
+        File directory = iTunesDirectory.toFile();
+        File[] files = directory.listFiles();
+        if(files != null) {
+            for (File child : files) {
+                if(child.isDirectory() && !oldFolders.contains(child.toPath())) {
+                    FileUtils.copyDirectory(child.getParentFile(), conversionPaths.get(conversionType).toFile());
+                }
+            }
+        }
+        System.out.println(devicePaths);
+    }
+
+    private void setEncoder(String encoder) throws IOException {
+        String[] args  = {"python", "src/scripts/setEncoder.py", encoder};
+        Process pro = Runtime.getRuntime().exec(args);
+        try {
+            pro.waitFor();
+            BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            while((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
+            while((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void readSetupFile() {
         formatPaths = new HashMap<>();
         conversionPaths = new HashMap<>();
+        devicePaths = new HashMap<>();
         try {
             File inputFile = new File("setup.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -216,10 +316,16 @@ public class LocalMusicManagerApp extends Application {
                 conversionPaths.put(currentElement.getElementsByTagName("fileType").item(0).getTextContent(), Paths.get(currentElement.getElementsByTagName("path").item(0).getTextContent()));
             }
 
-            NodeList deviceList = doc.getElementsByTagName("deviceList");
+            NodeList deviceList = doc.getElementsByTagName("deviceDirectory");
             for(int i=0; i<deviceList.getLength(); i++) {
                 Element currentElement = (Element) deviceList.item(i);
                 devicePaths.put(currentElement.getElementsByTagName("device").item(0).getTextContent(), Paths.get(currentElement.getElementsByTagName("path").item(0).getTextContent()));
+            }
+
+            NodeList iTunesList = doc.getElementsByTagName("iTunesDirectory");
+            for(int i=0; i<iTunesList.getLength(); i++) {
+                Element currentElement = (Element) iTunesList.item(i);
+                iTunesDirectory = Paths.get(currentElement.getElementsByTagName("path").item(0).getTextContent());
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
