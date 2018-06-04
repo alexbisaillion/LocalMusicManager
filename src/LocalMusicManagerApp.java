@@ -1,10 +1,18 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.io.FileUtils;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -13,10 +21,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,7 +54,7 @@ public class LocalMusicManagerApp extends Application {
             }
         });
 
-        view.getFinish().setOnAction(new EventHandler<ActionEvent>() {
+        view.getAddToLibrary().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 for(NewFile nf: model) {
@@ -181,9 +186,21 @@ public class LocalMusicManagerApp extends Application {
                 try {
                     setEncoder("AAC Encoder");
                     convert();
-                    //relocate("AAC");
+                    view.getRelocateAAC().setDisable(false);
                 }
                 catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        view.getRelocateAAC().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    relocate("AAC");
+                    view.getCleanUpItunes().setDisable(false);
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -193,12 +210,34 @@ public class LocalMusicManagerApp extends Application {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    //setEncoder("MP3 Encoder");
-                    //convert();
-                    //relocate("MP3");
-                    relocate("AAC");
+                    setEncoder("MP3 Encoder");
+                    convert();
+                    view.getRelocateMP3().setDisable(false);
                 }
                 catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        view.getRelocateMP3().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    relocate("MP3");
+                    view.getCleanUpItunes().setDisable(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        view.getCleanUpItunes().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    cleanUpItunes();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -207,7 +246,7 @@ public class LocalMusicManagerApp extends Application {
 
         primaryStage.setTitle("Local Music Manager");
         primaryStage.setResizable(true);
-        primaryStage.setScene(new Scene(view, 945, 500));
+        primaryStage.setScene(new Scene(view, 1155, 500));
         primaryStage.show();
     }
 
@@ -242,22 +281,66 @@ public class LocalMusicManagerApp extends Application {
             }
         }
         for(Path p: sortedFiles) {
-            String[] args  = {"python", "src/scripts/convert.py", p.toString()};
-            Process pro = Runtime.getRuntime().exec(args);
-            try {
-                pro.waitFor();
-                BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
-                String line;
-                while((line = br.readLine()) != null) {
-                    System.out.println(line);
+            if(p.toFile().isDirectory()) {
+                File[] songs = p.toFile().listFiles();
+                if(songs != null) {
+                    for(File song : songs) {
+                        String[] args = {"python", "src/scripts/convert.py", song.getPath()};
+                        Process pro = Runtime.getRuntime().exec(args);
+                        try {
+                            pro.waitFor();
+                            BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                System.out.println(line);
+                            }
+                            br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
+                            while ((line = br.readLine()) != null) {
+                                System.out.println(line);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
-                br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
-                while((line = br.readLine()) != null) {
-                    System.out.println(line);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+            else {
+                String[] args = {"python", "src/scripts/convert.py", p.toString()};
+                Process pro = Runtime.getRuntime().exec(args);
+                try {
+                    pro.waitFor();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                    br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
+                    while ((line = br.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void cleanUpItunes() throws IOException {
+        String[] args  = {"python", "src/scripts/deleteMissingTracks.py"};
+        Process pro = Runtime.getRuntime().exec(args);
+        try {
+            pro.waitFor();
+            BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            while((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
+            while((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -267,11 +350,11 @@ public class LocalMusicManagerApp extends Application {
         if(files != null) {
             for (File child : files) {
                 if(child.isDirectory() && !oldFolders.contains(child.toPath())) {
-                    FileUtils.copyDirectory(child.getParentFile(), conversionPaths.get(conversionType).toFile());
+                    FileUtils.copyDirectoryToDirectory(child, conversionPaths.get(conversionType).toFile());
+                    FileUtils.deleteDirectory(child);
                 }
             }
         }
-        System.out.println(devicePaths);
     }
 
     private void setEncoder(String encoder) throws IOException {

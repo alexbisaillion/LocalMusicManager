@@ -4,7 +4,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.ColumnConstraintsBuilder;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,10 +19,13 @@ public class LocalMusicManagerView extends GridPane {
     public GridPane middle;
     public GridPane bottom;
     private Button addToQueue;
-    private Button finish;
+    private Button addToLibrary;
     private Button addToItunes;
     private Button convertToAAC;
     private Button convertToMP3;
+    private Button relocateAAC;
+    private Button relocateMP3;
+    private Button cleanUpItunes;
 
     public LocalMusicManagerView(ArrayList<NewFile> m) {
         setHgap(10);
@@ -49,27 +55,51 @@ public class LocalMusicManagerView extends GridPane {
         addToQueue = new Button("ADD TO QUEUE");
         addToQueue.setMinWidth(195);
         bottom.add(addToQueue, 0, 0, 1, 1);
-        finish = new Button("ADD TO LIBRARY");
-        finish.setMinWidth(720);
-        bottom.add(finish, 1, 0, 2, 1);
-        finish.setDisable(true);
+        addToLibrary = new Button("ADD TO LIBRARY");
+        addToLibrary.setMinWidth(930);
+        bottom.add(addToLibrary, 1, 0, 2, 1);
+        addToLibrary.setDisable(true);
         addToItunes = new Button("ADD TO iTUNES");
         addToItunes.setDisable(true);
-        addToItunes.setMinWidth(925);
-        bottom.add(addToItunes, 0, 1, 3, 1);
+        addToItunes.setMinWidth(1135);
+        bottom.add(addToItunes, 0, 1, 7, 1);
+
+        GridPane convertAndRelocate = new GridPane();
+        for(int i=0; i<4; i++) {
+            ColumnConstraints cc = new ColumnConstraints();
+            cc.setFillWidth(true);
+            cc.setHgrow(Priority.ALWAYS);
+            convertAndRelocate.getColumnConstraints().add(cc);
+        }
+        convertAndRelocate.setHgap(10);
         convertToAAC = new Button("CONVERT TO AAC");
         convertToAAC.setDisable(true);
-        convertToAAC.setMinWidth(925);
-        bottom.add(convertToAAC, 0,2, 3, 1);
-        convertToMP3 = new Button("CONVERT To MP3");
+        convertToAAC.setMaxWidth(Integer.MAX_VALUE);
+        convertAndRelocate.add(convertToAAC, 0, 0);
+        relocateAAC = new Button("RELOCATE AAC");
+        relocateAAC.setDisable(true);
+        relocateAAC.setMaxWidth(Integer.MAX_VALUE);
+        convertAndRelocate.add(relocateAAC, 1, 0);
+        convertToMP3 = new Button("CONVERT TO MP3");
         convertToMP3.setDisable(true);
-        convertToMP3.setMinWidth(925);
-        bottom.add(convertToMP3, 0, 3, 3, 1);
+        convertToMP3.setMaxWidth(Integer.MAX_VALUE);
+        convertAndRelocate.add(convertToMP3, 2, 0);
+        relocateMP3 = new Button("RELOCATE MP3");
+        relocateMP3.setDisable(true);
+        relocateMP3.setMaxWidth(Integer.MAX_VALUE);
+        convertAndRelocate.add(relocateMP3, 3, 0);
+        bottom.add(convertAndRelocate, 0, 2, 7, 1);
+
+        cleanUpItunes = new Button("CLEAN UP iTUNES");
+        cleanUpItunes.setDisable(true);
+        cleanUpItunes.setMinWidth(1135);
+        bottom.add(cleanUpItunes, 0, 3, 7, 1);
+
         add(bottom, 0, 2);
     }
 
     public Button getAddToQueue() { return addToQueue; }
-    public Button getFinish() { return finish; }
+    public Button getAddToLibrary() { return addToLibrary; }
     public Button getAddToItunes() { return addToItunes; }
 
     public Button getConvertToAAC() {
@@ -78,6 +108,18 @@ public class LocalMusicManagerView extends GridPane {
 
     public Button getConvertToMP3() {
         return convertToMP3;
+    }
+
+    public Button getRelocateAAC() {
+        return relocateAAC;
+    }
+
+    public Button getRelocateMP3() {
+        return relocateMP3;
+    }
+
+    public Button getCleanUpItunes() {
+        return cleanUpItunes;
     }
 
     public void update() {
@@ -89,13 +131,13 @@ public class LocalMusicManagerView extends GridPane {
         add(middle, 0, 1);
 
         if(model.size() == 0) {
-            finish.setDisable(true);
+            addToLibrary.setDisable(true);
         }
         else {
-            finish.setDisable(false);
+            addToLibrary.setDisable(false);
             for (NewFile nf : model) {
                 if (nf.getSelectedFile() == null || nf.getFormat() == null) {
-                    finish.setDisable(true);
+                    addToLibrary.setDisable(true);
                     break;
                 }
             }
@@ -161,6 +203,7 @@ public class LocalMusicManagerView extends GridPane {
                     update();
                 }
             });
+
         }
     }
 }

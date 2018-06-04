@@ -12,6 +12,7 @@ public class NewFileGridPane extends GridPane {
     private TextField artist;
     private TextField albumArtist;
     private TextField genre;
+    private Button delete;
 
     public NewFileGridPane() {
         setHgap(10);
@@ -43,12 +44,18 @@ public class NewFileGridPane extends GridPane {
         genre.setPromptText("Genre");
         genre.setMinWidth(100);
 
+        delete = new Button("DELETE");
+        delete.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+        delete.setMinWidth(50);
+        delete.setDisable(true);
+
         add(browse, 0, 0);
         add(selectedFilePath, 1, 0);
         add(format, 2, 0);
         add(artist, 3, 0);
         add(albumArtist, 4, 0);
         add(genre, 5, 0);
+        add(delete, 6, 0);
     }
 
     public Button getBrowse() {
@@ -77,5 +84,9 @@ public class NewFileGridPane extends GridPane {
 
     public TextField getGenre() {
         return genre;
+    }
+
+    public Button getDelete() {
+        return delete;
     }
 }
