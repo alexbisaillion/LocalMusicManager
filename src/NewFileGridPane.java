@@ -47,7 +47,7 @@ public class NewFileGridPane extends GridPane {
         delete = new Button("DELETE");
         delete.setStyle("-fx-background-color: red; -fx-text-fill: white;");
         delete.setMinWidth(50);
-        delete.setDisable(true);
+        //delete.setDisable(true);
 
         add(browse, 0, 0);
         add(selectedFilePath, 1, 0);
@@ -89,4 +89,5 @@ public class NewFileGridPane extends GridPane {
     public Button getDelete() {
         return delete;
     }
+
 }

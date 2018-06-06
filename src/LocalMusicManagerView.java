@@ -204,6 +204,15 @@ public class LocalMusicManagerView extends GridPane {
                 }
             });
 
+            nf.getView().getDelete().setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    nf.getView().getChildren().clear();
+                    model.remove(nf);
+                    update();
+                }
+            });
+
         }
     }
 }
