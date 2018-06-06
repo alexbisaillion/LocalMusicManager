@@ -19,35 +19,35 @@ public class NewFileGridPane extends GridPane {
         setVgap(10);
 
         browse = new Button("Browse");
-        browse.setMinWidth(75);
+        browse.setPrefWidth(60);
 
         chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Audio/Archive Files,", "*.m4a", "*.mp3", "*.aac", "*.wav", "*.aiff", "*.zip", "*.rar", "*.7z"));
 
         selectedFilePath = new TextField();
-        selectedFilePath.setMinWidth(400);
+        selectedFilePath.setPrefWidth(400);
         selectedFilePath.setEditable(false);
         selectedFilePath.setDisable(true);
 
         format = new ComboBox<ReleaseFormat>();
         format.setDisable(true);
-        format.setMinWidth(100);
+        format.setPrefWidth(100);
 
         artist = new TextField();
         artist.setPromptText("Artist");
-        artist.setMinWidth(100);
+        artist.setPrefWidth(125);
 
         albumArtist = new TextField();
         albumArtist.setPromptText("Album Artist");
-        albumArtist.setMinWidth(100);
+        albumArtist.setPrefWidth(125);
 
         genre = new TextField();
         genre.setPromptText("Genre");
-        genre.setMinWidth(100);
+        genre.setPrefWidth(125);
 
         delete = new Button("DELETE");
         delete.setStyle("-fx-background-color: red; -fx-text-fill: white;");
-        delete.setMinWidth(50);
+        delete.setPrefWidth(60);
 
         add(browse, 0, 0);
         add(selectedFilePath, 1, 0);

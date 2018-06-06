@@ -4,10 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.ColumnConstraintsBuilder;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,45 +51,46 @@ public class LocalMusicManagerView extends GridPane {
         bottom.setVgap(10);
         addToQueue = new Button("ADD TO QUEUE");
         addToQueue.setMinWidth(195);
+        addToQueue.setMaxWidth(195);
         bottom.add(addToQueue, 0, 0, 1, 1);
         addToLibrary = new Button("ADD TO LIBRARY");
-        addToLibrary.setMinWidth(930);
+        addToLibrary.setMinWidth(850);
+        addToLibrary.setMaxWidth(850);
         bottom.add(addToLibrary, 1, 0, 2, 1);
         addToLibrary.setDisable(true);
         addToItunes = new Button("ADD TO iTUNES");
         addToItunes.setDisable(true);
-        addToItunes.setMinWidth(1135);
+        addToItunes.setMinWidth(1055);
+        addToItunes.setMaxWidth(1055);
         bottom.add(addToItunes, 0, 1, 7, 1);
 
         GridPane convertAndRelocate = new GridPane();
-        for(int i=0; i<4; i++) {
-            ColumnConstraints cc = new ColumnConstraints();
-            cc.setFillWidth(true);
-            cc.setHgrow(Priority.ALWAYS);
-            convertAndRelocate.getColumnConstraints().add(cc);
-        }
         convertAndRelocate.setHgap(10);
         convertToAAC = new Button("CONVERT TO AAC");
         convertToAAC.setDisable(true);
-        convertToAAC.setMaxWidth(Integer.MAX_VALUE);
+        convertToAAC.setMinWidth(256);
+        convertToAAC.setMaxWidth(256);
         convertAndRelocate.add(convertToAAC, 0, 0);
         relocateAAC = new Button("RELOCATE AAC");
         relocateAAC.setDisable(true);
-        relocateAAC.setMaxWidth(Integer.MAX_VALUE);
+        relocateAAC.setMinWidth(256);
+        relocateAAC.setMaxWidth(256);
         convertAndRelocate.add(relocateAAC, 1, 0);
         convertToMP3 = new Button("CONVERT TO MP3");
         convertToMP3.setDisable(true);
-        convertToMP3.setMaxWidth(Integer.MAX_VALUE);
+        convertToMP3.setMinWidth(256);
+        convertToMP3.setMaxWidth(256);
         convertAndRelocate.add(convertToMP3, 2, 0);
         relocateMP3 = new Button("RELOCATE MP3");
         relocateMP3.setDisable(true);
-        relocateMP3.setMaxWidth(Integer.MAX_VALUE);
+        relocateMP3.setMinWidth(256);
+        relocateMP3.setMaxWidth(256);
         convertAndRelocate.add(relocateMP3, 3, 0);
         bottom.add(convertAndRelocate, 0, 2, 7, 1);
 
         cleanUpItunes = new Button("CLEAN UP iTUNES");
         cleanUpItunes.setDisable(true);
-        cleanUpItunes.setMinWidth(1135);
+        cleanUpItunes.setMinWidth(1055);
         bottom.add(cleanUpItunes, 0, 3, 7, 1);
 
         add(bottom, 0, 2);
