@@ -14,11 +14,9 @@ public class SortAudioFile {
         AudioFile file = AudioFileIO.read(source);
         Tag tag = file.getTag();
         if(tag.getFirst(FieldKey.TITLE).contains(".com")) { //check for junk in the title
-            System.out.println("hi");
             return true;
         }
         if(tag.getArtworkList().size() < 1) { //check for missing album art
-            System.out.println("hi");
             return true;
         }
         if(tag.getFirst(FieldKey.YEAR).length() != 4) { //check for faulty date
@@ -61,6 +59,15 @@ public class SortAudioFile {
         if(title.contains("Feat.")) { //check for junk in the title
             String newTitle = title.replace("Feat.", "feat.");
             tag.setField(FieldKey.TITLE, newTitle);
+            AudioFileIO.write(file);
+        }
+        String genre = tag.getFirst(FieldKey.GENRE);
+        if(genre.equals("R&B/Soul")) {
+            tag.setField(FieldKey.TITLE, "R&B");
+            AudioFileIO.write(file);
+        }
+        if(genre.equals("Hip-Hop/Rap") || genre.equals("Hip Hop")) {
+            tag.setField(FieldKey.GENRE, "Hip-Hop");
             AudioFileIO.write(file);
         }
     }

@@ -2,6 +2,8 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
@@ -30,6 +32,10 @@ public class LocalMusicManagerApp extends Application {
 
     public void start(Stage primaryStage) {
         readSetupFile();
+        if(!checkWritePermissions()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "You have a faulty directory in your setup!");
+            alert.showAndWait();
+        }
         model = new ArrayList<>();
         view = new LocalMusicManagerView(model);
         sortedFiles = new ArrayList<>();
@@ -174,6 +180,13 @@ public class LocalMusicManagerApp extends Application {
                     setEncoder("AAC Encoder");
                     convert();
                     view.getRelocateAAC().setDisable(false);
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to copy these files to your phone?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                    alert.showAndWait();
+
+                    if (alert.getResult() == ButtonType.YES) {
+                        copyToPhone();
+                    }
+
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -344,6 +357,18 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
+    public void copyToPhone() throws IOException {
+        File directory = iTunesDirectory.toFile();
+        File[] files = directory.listFiles();
+        if(files != null) {
+            for (File child : files) {
+                if(child.isDirectory() && !oldFolders.contains(child.toPath())) {
+                    FileUtils.copyDirectoryToDirectory(child, devicePaths.get("Phone").toFile());
+                }
+            }
+        }
+    }
+
     private void setEncoder(String encoder) throws IOException {
         String[] args  = {"python", "src/scripts/setEncoder.py", encoder};
         Process pro = Runtime.getRuntime().exec(args);
@@ -400,6 +425,27 @@ public class LocalMusicManagerApp extends Application {
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
+    }
+    public boolean checkWritePermissions() {
+        for(Path p: formatPaths.values()) {
+            if(!p.toFile().canWrite()) {
+                return false;
+            }
+        }
+        for(Path p: conversionPaths.values()) {
+            if(!p.toFile().canWrite()) {
+                return false;
+            }
+        }
+        for(Path p: devicePaths.values()) {
+            if(!p.toFile().canWrite()) {
+                return false;
+            }
+        }
+        if(!iTunesDirectory.toFile().canWrite()) {
+            return false;
+        }
+        return true;
     }
 
     public static void main(String[] args) {
