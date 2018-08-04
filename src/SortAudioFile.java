@@ -50,6 +50,21 @@ public class SortAudioFile {
             tag.setField(FieldKey.COMMENT, "");
             AudioFileIO.write(file);
         }
+        File parent = directory.getParentFile();
+        File[] children = parent.listFiles();
+        if(children != null) {
+            int numTracksInAlbum = 0;
+            for(File child: children) {
+                AudioFile childFile = AudioFileIO.read(child);
+                Tag childTag = childFile.getTag();
+                if(childTag.getFirst(FieldKey.ALBUM).equals(tag.getFirst(FieldKey.ALBUM))) {
+                    numTracksInAlbum++;
+                }
+            }
+            if(numTracksInAlbum > 0 && !String.valueOf(numTracksInAlbum).equals(tag.getFirst(FieldKey.TRACK_TOTAL))) {
+                tag.setField((FieldKey.TRACK_TOTAL));
+            }
+        }
         String title = tag.getFirst(FieldKey.TITLE);
         if(title.contains("ft.")) { //check for junk in the title
             String newTitle = title.replace("ft.", "feat.");
