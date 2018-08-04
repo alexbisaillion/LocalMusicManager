@@ -4,6 +4,7 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,6 +42,10 @@ public class SortAudioFile {
         File directory = location.toFile();
         AudioFile file = AudioFileIO.read(directory);
         Tag tag = file.getTag();
+        if(tag.getFirst(FieldKey.DISC_TOTAL).equals("1")) {
+            tag.setField(FieldKey.DISC_TOTAL, "");
+            tag.setField(FieldKey.DISC_NO, "");
+        }
         if(tag.getFirst(FieldKey.COMMENT).length() > 0) {
             tag.setField(FieldKey.COMMENT, "");
             AudioFileIO.write(file);
@@ -63,7 +68,7 @@ public class SortAudioFile {
         }
         String genre = tag.getFirst(FieldKey.GENRE);
         if(genre.equals("R&B/Soul")) {
-            tag.setField(FieldKey.TITLE, "R&B");
+            tag.setField(FieldKey.GENRE, "R&B");
             AudioFileIO.write(file);
         }
         if(genre.equals("Hip-Hop/Rap") || genre.equals("Hip Hop")) {
