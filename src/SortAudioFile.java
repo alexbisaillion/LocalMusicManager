@@ -43,8 +43,8 @@ public class SortAudioFile {
         AudioFile file = AudioFileIO.read(directory);
         Tag tag = file.getTag();
         if(tag.getFirst(FieldKey.DISC_TOTAL).equals("1")) {
-            tag.setField(FieldKey.DISC_TOTAL, "");
-            tag.setField(FieldKey.DISC_NO, "");
+            tag.deleteField(FieldKey.DISC_TOTAL);
+            tag.deleteField(FieldKey.DISC_NO);
         }
         if(tag.getFirst(FieldKey.COMMENT).length() > 0) {
             tag.setField(FieldKey.COMMENT, "");
