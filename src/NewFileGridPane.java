@@ -4,6 +4,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.nio.file.Paths;
+
 public class NewFileGridPane extends GridPane {
     private Button browse;
     private FileChooser chooser;
@@ -22,6 +25,7 @@ public class NewFileGridPane extends GridPane {
         browse.setPrefWidth(60);
 
         chooser = new FileChooser();
+        chooser.setInitialDirectory((Paths.get("C:\\Users\\abisa\\Downloads")).toFile());
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Audio/Archive Files,", "*.m4a", "*.mp3", "*.aac", "*.wav", "*.aiff", "*.zip", "*.rar", "*.7z"));
 
         selectedFilePath = new TextField();
