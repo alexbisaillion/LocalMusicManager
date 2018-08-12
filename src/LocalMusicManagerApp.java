@@ -6,6 +6,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -213,8 +217,14 @@ public class LocalMusicManagerApp extends Application {
                     setEncoder("MP3 Encoder");
                     convert();
                     view.getRelocateMP3().setDisable(false);
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to rename these MP3 files for usage on a car stereo?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                    alert.showAndWait();
+
+                    if (alert.getResult() == ButtonType.YES) {
+                        renameForCarStereo();
+                    }
                 }
-                catch (IOException e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -351,7 +361,7 @@ public class LocalMusicManagerApp extends Application {
             for (File child : files) {
                 if(child.isDirectory() && !oldFolders.contains(child.toPath())) {
                     FileUtils.copyDirectoryToDirectory(child, conversionPaths.get(conversionType).toFile());
-                    FileUtils.deleteDirectory(child);
+                    FileUtils.deleteDirectory(child); //possible error
                 }
             }
         }
@@ -364,6 +374,32 @@ public class LocalMusicManagerApp extends Application {
             for (File child : files) {
                 if(child.isDirectory() && !oldFolders.contains(child.toPath())) {
                     FileUtils.copyDirectoryToDirectory(child, devicePaths.get("Phone").toFile());
+                }
+            }
+        }
+    }
+
+    public void renameForCarStereo() throws Exception {
+        File directory = iTunesDirectory.toFile();
+        File[] files = directory.listFiles();
+        if(files != null) {
+            for (File artistDirectory : files) {
+                if(artistDirectory.isDirectory() && !oldFolders.contains(artistDirectory.toPath())) {
+                    File[] projects = artistDirectory.listFiles();
+                    if(projects != null) {
+                        for (File project : projects) {
+                            File[] tracks = project.listFiles();
+                            if(tracks != null) {
+                                for (File track : tracks) {
+                                    AudioFile f = AudioFileIO.read(track);
+                                    Tag tag = f.getTag();
+                                    String name = tag.getFirst(FieldKey.ARTIST) + " - " + tag.getFirst(FieldKey.TITLE);
+                                    name = SortArchiveFile.stripIllegalCharacters(name);
+                                    track.renameTo(new File(track.getParent() + "\\" + name + ".mp3"));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

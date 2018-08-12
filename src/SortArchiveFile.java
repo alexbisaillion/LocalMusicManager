@@ -197,7 +197,7 @@ public class SortArchiveFile {
         return newLocation;
     }
 
-    private static String stripIllegalCharacters(String s) {
+    public static String stripIllegalCharacters(String s) {
         StringBuilder stringBuilder = new StringBuilder(s);
         char[] illegalCharacters = {'/', '\\', ':', '*', '?', '"', '<', '>', '|'};
         for(int i = 0; i<stringBuilder.length(); i++) {
