@@ -21,10 +21,12 @@ for x in range(1, tracks.Count+1):
         print(e)
     
 # When deleting a track, the next track falls into the place of the deleted track.
-# Therefore, it is necessary to keep deleting at the same index.
+# Therefore, it is necessary to keep deleting at the same index, assuming all deleted tracks follow sequentially.
 for x in range(len(missingTracks)):
     try:
-        print("Deleting " + tracks.Item(missingTracks[0]).Name + " at index " + str(missingTracks[0]) + " previously at " + str(missingTracks[x]))
-        tracks.Item(missingTracks[0]).Delete()
+        missingTrack = win32com.client.CastTo(tracks.Item(missingTracks[0]), 'IITFileOrCDTrack')
+        if(missingTrack.Location == ""):
+            print("Deleting " + tracks.Item(missingTracks[0]).Name + " at index " + str(missingTracks[0]) + " previously at " + str(missingTracks[x]))
+            tracks.Item(missingTracks[0]).Delete()
     except Exception as e:
         print(e)
