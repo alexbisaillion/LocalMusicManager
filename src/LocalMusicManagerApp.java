@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 import org.jaudiotagger.audio.AudioFile;
@@ -55,6 +56,11 @@ public class LocalMusicManagerApp extends Application {
         view.getAddToLibrary().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Processing");
+                alert.setHeaderText("Adding music to library...");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                alert.show();
                 for(NewFile nf: model) {
                     switch(nf.getExtension()) {
                         case ".zip":
@@ -161,12 +167,19 @@ public class LocalMusicManagerApp extends Application {
                     }
                 }
                 view.getAddToItunes().setDisable(false);
+                alert.setContentText("Done!");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
             }
         });
 
         view.getAddToItunes().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Processing");
+                alert.setHeaderText("Adding to iTunes...");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                alert.show();
                 try {
                     addToItunes();
                 } catch (IOException e) {
@@ -174,82 +187,132 @@ public class LocalMusicManagerApp extends Application {
                 }
                 view.getConvertToAAC().setDisable(false);
                 view.getConvertToMP3().setDisable(false);
+                alert.setContentText("Done!");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
             }
         });
 
         view.getConvertToAAC().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Processing");
+                alert.setHeaderText("Converting to AAC...");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                alert.show();
                 try {
                     setEncoder("AAC Encoder");
                     convert();
                     view.getRelocateAAC().setDisable(false);
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to copy these files to your phone?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-                    alert.showAndWait();
+                    Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to copy these files to your phone?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                    alert2.showAndWait();
 
-                    if (alert.getResult() == ButtonType.YES) {
+                    if (alert2.getResult() == ButtonType.YES) {
+                        Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
+                        alert3.setTitle("Processing");
+                        alert3.setHeaderText("Copying to phone...");
+                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                        alert3.show();
                         copyToPhone();
+                        alert3.setContentText("Done!");
+                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
-
                 }
                 catch (IOException e) {
                     e.printStackTrace();
                 }
+                alert.setContentText("Done!");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
             }
         });
 
         view.getRelocateAAC().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Processing");
+                alert.setHeaderText("Relocating AAC files...");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                alert.show();
                 try {
                     relocate("AAC");
                     view.getCleanUpItunes().setDisable(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                alert.setContentText("Done!");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
             }
         });
 
         view.getConvertToMP3().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Processing");
+                alert.setHeaderText("Converting to MP3...");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                alert.show();
                 try {
                     setEncoder("MP3 Encoder");
                     convert();
                     view.getRelocateMP3().setDisable(false);
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to rename these MP3 files for usage on a car stereo?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-                    alert.showAndWait();
+                    Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to rename these MP3 files for usage on a car stereo?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                    alert2.showAndWait();
 
-                    if (alert.getResult() == ButtonType.YES) {
+                    if (alert2.getResult() == ButtonType.YES) {
+                        Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
+                        alert3.setTitle("Processing");
+                        alert3.setHeaderText("Renaming MP3 files...");
+                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                        alert3.show();
                         renameForCarStereo();
+                        alert3.setContentText("Done!");
+                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                 }
+                alert.setContentText("Done!");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
             }
         });
 
         view.getRelocateMP3().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Processing");
+                alert.setHeaderText("Relocating MP3 files...");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                alert.show();
                 try {
                     relocate("MP3");
                     view.getCleanUpItunes().setDisable(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                alert.setContentText("Done!");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
             }
         });
 
         view.getCleanUpItunes().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Processing");
+                alert.setHeaderText("Cleaning up iTunes...");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                alert.show();
                 try {
                     cleanUpItunes();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                alert.setContentText("Done!");
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
             }
         });
 
