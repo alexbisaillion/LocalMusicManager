@@ -76,7 +76,7 @@ public class SortAudioFile {
             tag.setField(FieldKey.GENRE, "R&B");
             AudioFileIO.write(file);
         }
-        if(genre.equals("Hip-Hop/Rap") || genre.equals("Hip Hop")) {
+        if(genre.equals("Hip-Hop/Rap") || genre.equals("Hip Hop") || genre.equals("Hip Hop/Rap")) {
             tag.setField(FieldKey.GENRE, "Hip-Hop");
             AudioFileIO.write(file);
         }
