@@ -194,15 +194,29 @@ public class LocalMusicManagerApp extends Application {
                 alert.setHeaderText("Adding to iTunes...");
                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
                 alert.show();
-                try {
-                    addToItunes();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                view.getConvertToAAC().setDisable(false);
-                view.getConvertToMP3().setDisable(false);
-                alert.setContentText("Done!");
-                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                Runnable update = new Runnable() {
+                    @Override
+                    public void run() {
+                        view.getConvertToAAC().setDisable(false);
+                        view.getConvertToMP3().setDisable(false);
+                        alert.setContentText("Done!");
+                        alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+
+                    }
+                };
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            addToItunes();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Platform.runLater(update);
+                    }
+                };
+                Thread t = new Thread(r);
+                t.start();
             }
         });
 
