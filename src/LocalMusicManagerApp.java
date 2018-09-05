@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -61,114 +62,127 @@ public class LocalMusicManagerApp extends Application {
                 alert.setHeaderText("Adding music to library...");
                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
                 alert.show();
-                for(NewFile nf: model) {
-                    switch(nf.getExtension()) {
-                        case ".zip":
-                            try {
-                                Path p = SortArchiveFile.extractZIP(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
-                                if(nf.getNewArtistTag() != null) {
-                                    SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
-                                }
-                                if(nf.getNewAlbumArtistTag() != null) {
-                                    SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
-                                }
-                                if(nf.getNewGenreTag() != null) {
-                                    SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
-                                }
-                                SortArchiveFile.correct(p);
-                                if(!SortArchiveFile.isFaulty(p)) {
-                                    sortedFiles.add(SortArchiveFile.move(p));
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        case ".rar":
-                            try {
-                                Path p = SortArchiveFile.extractRar(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
-                                if(nf.getNewArtistTag() != null) {
-                                    SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
-                                }
-                                if(nf.getNewAlbumArtistTag() != null) {
-                                    SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
-                                }
-                                if(nf.getNewGenreTag() != null) {
-                                    SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
-                                }
-                                SortArchiveFile.correct(p);
-                                if(!SortArchiveFile.isFaulty(p)) {
-                                    sortedFiles.add(SortArchiveFile.move(p));
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        case ".7z":
-                            try {
-                                Path p = SortArchiveFile.extract7z(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
-                                if(nf.getNewArtistTag() != null) {
-                                    SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
-                                }
-                                if(nf.getNewAlbumArtistTag() != null) {
-                                    SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
-                                }
-                                if(nf.getNewGenreTag() != null) {
-                                    SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
-                                }
-                                SortArchiveFile.correct(p);
-                                if(!SortArchiveFile.isFaulty(p)) {
-                                    sortedFiles.add(SortArchiveFile.move(p));
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        default:
-                            if(nf.getFormat() == ReleaseFormat.Single) {
-                                try {
-                                    if(nf.getNewArtistTag() != null) {
-                                        System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
-                                    }
-                                    if(nf.getNewAlbumArtistTag() != null) {
-                                        System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
-                                    }
-                                    if(nf.getNewGenreTag() != null) {
-                                        System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
-                                    }
-                                    Path p = SortAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
-                                    SortAudioFile.correct(p);
-                                    if(!SortAudioFile.isFaulty(p)) {
-                                        sortedFiles.add(p);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            else {
-                                try {
-                                    if(nf.getNewArtistTag() != null) {
-                                        System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
-                                    }
-                                    if(nf.getNewAlbumArtistTag() != null) {
-                                        System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
-                                    }
-                                    if(nf.getNewGenreTag() != null) {
-                                        System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
-                                    }
-                                    Path p = SortAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
-                                    SortAudioFile.correct(p);
-                                    if(!SortAudioFile.isFaulty(p)) {
-                                        sortedFiles.add(p);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                Runnable update = new Runnable() {
+                    @Override
+                    public void run() {
+                        view.getAddToItunes().setDisable(false);
+                        alert.setContentText("Done!");
+                        alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
-                }
-                view.getAddToItunes().setDisable(false);
-                alert.setContentText("Done!");
-                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                };
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        for(NewFile nf: model) {
+                            switch(nf.getExtension()) {
+                                case ".zip":
+                                    try {
+                                        Path p = SortArchiveFile.extractZIP(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                        if(nf.getNewArtistTag() != null) {
+                                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
+                                        }
+                                        if(nf.getNewAlbumArtistTag() != null) {
+                                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
+                                        }
+                                        if(nf.getNewGenreTag() != null) {
+                                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
+                                        }
+                                        SortArchiveFile.correct(p);
+                                        if(!SortArchiveFile.isFaulty(p)) {
+                                            sortedFiles.add(SortArchiveFile.move(p));
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
+                                case ".rar":
+                                    try {
+                                        Path p = SortArchiveFile.extractRar(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                        if(nf.getNewArtistTag() != null) {
+                                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
+                                        }
+                                        if(nf.getNewAlbumArtistTag() != null) {
+                                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
+                                        }
+                                        if(nf.getNewGenreTag() != null) {
+                                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
+                                        }
+                                        SortArchiveFile.correct(p);
+                                        if(!SortArchiveFile.isFaulty(p)) {
+                                            sortedFiles.add(SortArchiveFile.move(p));
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
+                                case ".7z":
+                                    try {
+                                        Path p = SortArchiveFile.extract7z(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                        if(nf.getNewArtistTag() != null) {
+                                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
+                                        }
+                                        if(nf.getNewAlbumArtistTag() != null) {
+                                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
+                                        }
+                                        if(nf.getNewGenreTag() != null) {
+                                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
+                                        }
+                                        SortArchiveFile.correct(p);
+                                        if(!SortArchiveFile.isFaulty(p)) {
+                                            sortedFiles.add(SortArchiveFile.move(p));
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
+                                default:
+                                    if(nf.getFormat() == ReleaseFormat.Single) {
+                                        try {
+                                            if(nf.getNewArtistTag() != null) {
+                                                System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
+                                            }
+                                            if(nf.getNewAlbumArtistTag() != null) {
+                                                System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
+                                            }
+                                            if(nf.getNewGenreTag() != null) {
+                                                System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
+                                            }
+                                            Path p = SortAudioFile.moveSingle(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                            SortAudioFile.correct(p);
+                                            if(!SortAudioFile.isFaulty(p)) {
+                                                sortedFiles.add(p);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    else {
+                                        try {
+                                            if(nf.getNewArtistTag() != null) {
+                                                System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
+                                            }
+                                            if(nf.getNewAlbumArtistTag() != null) {
+                                                System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
+                                            }
+                                            if(nf.getNewGenreTag() != null) {
+                                                System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
+                                            }
+                                            Path p = SortAudioFile.moveUnreleased(nf.getSelectedFile(), formatPaths.get(nf.getFormat()));
+                                            SortAudioFile.correct(p);
+                                            if(!SortAudioFile.isFaulty(p)) {
+                                                sortedFiles.add(p);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                            }
+                        }
+                        Platform.runLater(update);
+                    }
+                };
+                Thread t = new Thread(r);
+                t.start();
             }
         });
 
