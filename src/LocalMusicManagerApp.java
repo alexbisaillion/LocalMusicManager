@@ -338,6 +338,41 @@ public class LocalMusicManagerApp extends Application {
                         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
                 };
+                Runnable confirmRenameForCarStereo = new Runnable() {
+                    @Override
+                    public void run() {
+                        Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to rename these MP3 files for usage on a car stereo?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                        alert2.showAndWait();
+
+                        if (alert2.getResult() == ButtonType.YES) {
+                            Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
+                            alert3.setTitle("Processing");
+                            alert3.setHeaderText("Renaming MP3 files...");
+                            alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                            alert3.show();
+                            Runnable update2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    alert3.setContentText("Done!");
+                                    alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                                }
+                            };
+                            Runnable r2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        renameForCarStereo();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    Platform.runLater(update2);
+                                }
+                            };
+                            Thread t2 = new Thread(r2);
+                            t2.start();
+                        }
+                    }
+                };
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
@@ -345,36 +380,7 @@ public class LocalMusicManagerApp extends Application {
                             setEncoder("MP3 Encoder");
                             convert();
                             view.getRelocateMP3().setDisable(false);
-                            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to rename these MP3 files for usage on a car stereo?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-                            alert2.showAndWait();
-
-                            if (alert2.getResult() == ButtonType.YES) {
-                                Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
-                                alert3.setTitle("Processing");
-                                alert3.setHeaderText("Renaming MP3 files...");
-                                alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-                                alert3.show();
-                                Runnable update2 = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        alert3.setContentText("Done!");
-                                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
-                                    }
-                                };
-                                Runnable r2 = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            renameForCarStereo();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        Platform.runLater(update2);
-                                    }
-                                };
-                                Thread t2 = new Thread(r2);
-                                t2.start();
-                            }
+                            Platform.runLater(confirmRenameForCarStereo);
                         }
                         catch (Exception e) {
                             e.printStackTrace();
