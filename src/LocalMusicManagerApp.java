@@ -271,8 +271,8 @@ public class LocalMusicManagerApp extends Application {
                                         Platform.runLater(update2);
                                     }
                                 };
-                                Thread t = new Thread(r2);
-                                t.start();
+                                Thread t2 = new Thread(r2);
+                                t2.start();
                             }
                         }
                         catch (IOException e) {
@@ -294,14 +294,27 @@ public class LocalMusicManagerApp extends Application {
                 alert.setHeaderText("Relocating AAC files...");
                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
                 alert.show();
-                try {
-                    relocate("AAC");
-                    view.getCleanUpItunes().setDisable(false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                alert.setContentText("Done!");
-                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                Runnable update = new Runnable() {
+                    @Override
+                    public void run() {
+                        view.getCleanUpItunes().setDisable(false);
+                        alert.setContentText("Done!");
+                        alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                    }
+                };
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            relocate("AAC");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Platform.runLater(update);
+                    }
+                };
+                Thread t = new Thread(r);
+                t.start();
             }
         });
 
@@ -313,29 +326,59 @@ public class LocalMusicManagerApp extends Application {
                 alert.setHeaderText("Converting to MP3...");
                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
                 alert.show();
-                try {
-                    setEncoder("MP3 Encoder");
-                    convert();
-                    view.getRelocateMP3().setDisable(false);
-                    Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to rename these MP3 files for usage on a car stereo?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-                    alert2.showAndWait();
-
-                    if (alert2.getResult() == ButtonType.YES) {
-                        Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
-                        alert3.setTitle("Processing");
-                        alert3.setHeaderText("Renaming MP3 files...");
-                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-                        alert3.show();
-                        renameForCarStereo();
-                        alert3.setContentText("Done!");
-                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                Runnable update = new Runnable() {
+                    @Override
+                    public void run() {
+                        alert.setContentText("Done!");
+                        alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                alert.setContentText("Done!");
-                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                };
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            setEncoder("MP3 Encoder");
+                            convert();
+                            view.getRelocateMP3().setDisable(false);
+                            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to rename these MP3 files for usage on a car stereo?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                            alert2.showAndWait();
+
+                            if (alert2.getResult() == ButtonType.YES) {
+                                Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
+                                alert3.setTitle("Processing");
+                                alert3.setHeaderText("Renaming MP3 files...");
+                                alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                                alert3.show();
+                                Runnable update2 = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        alert3.setContentText("Done!");
+                                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                                    }
+                                };
+                                Runnable r2 = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            renameForCarStereo();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        Platform.runLater(update2);
+                                    }
+                                };
+                                Thread t2 = new Thread(r2);
+                                t2.start();
+                            }
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Platform.runLater(update);
+                    }
+                };
+                Thread t = new Thread(r);
+                t.start();
             }
         });
 
