@@ -55,6 +55,10 @@ public class SortAudioFile {
             tag.setField(FieldKey.COMMENT, "");
             AudioFileIO.write(file);
         }
+        if(tag.getFirst(FieldKey.IS_COMPILATION).equals("1") && !tag.getFirst(FieldKey.ALBUM_ARTIST).equals("Various Artists")) {
+            tag.deleteField(FieldKey.IS_COMPILATION);
+            AudioFileIO.write(file);
+        }
         String title = tag.getFirst(FieldKey.TITLE);
         if(title.contains("ft.")) { //check for junk in the title
             String newTitle = title.replace("ft.", "feat.");
@@ -96,6 +100,9 @@ public class SortAudioFile {
         AudioFile file = AudioFileIO.read(directory);
         Tag tag = file.getTag();
         tag.setField(FieldKey.ALBUM_ARTIST, albumArtist);
+        if(albumArtist.equals("Various Artists")) {
+            tag.setField(FieldKey.IS_COMPILATION, "1");
+        }
         AudioFileIO.write(file);
         return true;
     }
