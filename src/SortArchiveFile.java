@@ -184,7 +184,17 @@ public class SortArchiveFile {
             }
         }
         Path newLocation = location;
-        if(artist.length() > 0 && album.length() > 0) {
+        if(artist.equals(album)) { //self-titled albums are a problem:
+            File renamedFolder = new File(directory.getParent() + "\\" + album + " (Self-Titled)");
+            directory.renameTo(renamedFolder);
+            Path artistDirectory = Paths.get(location.getParent().toString() + "\\" + artist);
+            if(!Files.exists(artistDirectory)) {
+                Files.createDirectory(artistDirectory);
+            }
+            artistDirectory = Paths.get(location.getParent().toString() + "\\" + artist + "\\" + album + " (Self-Titled)");
+            newLocation = Files.move(Paths.get(renamedFolder.getPath()), artistDirectory);
+        }
+        else if(artist.length() > 0 && album.length() > 0) {
             File renamedFolder = new File(directory.getParent() + "\\" + album);
             directory.renameTo(renamedFolder); //rename album folder
             Path artistDirectory = Paths.get(location.getParent().toString() + "\\" + artist);
