@@ -228,29 +228,61 @@ public class LocalMusicManagerApp extends Application {
                 alert.setHeaderText("Converting to AAC...");
                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
                 alert.show();
-                try {
-                    setEncoder("AAC Encoder");
-                    convert();
-                    view.getRelocateAAC().setDisable(false);
-                    Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to copy these files to your phone?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-                    alert2.showAndWait();
-
-                    if (alert2.getResult() == ButtonType.YES) {
-                        Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
-                        alert3.setTitle("Processing");
-                        alert3.setHeaderText("Copying to phone...");
-                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-                        alert3.show();
-                        copyToPhone();
-                        alert3.setContentText("Done!");
-                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                Runnable update = new Runnable() {
+                    @Override
+                    public void run() {
+                        view.getConvertToAAC().setDisable(false);
+                        view.getConvertToMP3().setDisable(false);
+                        alert.setContentText("Done!");
+                        alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-                alert.setContentText("Done!");
-                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                };
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            setEncoder("AAC Encoder");
+                            convert();
+                            view.getRelocateAAC().setDisable(false);
+                            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to copy these files to your phone?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                            alert2.showAndWait();
+
+                            if (alert2.getResult() == ButtonType.YES) {
+                                Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
+                                alert3.setTitle("Processing");
+                                alert3.setHeaderText("Copying to phone...");
+                                alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                                alert3.show();
+                                Runnable update2 = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        alert3.setContentText("Done!");
+                                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                                    }
+                                };
+                                Runnable r2 = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            copyToPhone();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Platform.runLater(update2);
+                                    }
+                                };
+                                Thread t = new Thread(r2);
+                                t.start();
+                            }
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Platform.runLater(update);
+                    }
+                };
+                Thread t = new Thread(r);
+                t.start();
             }
         });
 
