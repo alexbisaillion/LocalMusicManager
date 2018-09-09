@@ -237,6 +237,40 @@ public class LocalMusicManagerApp extends Application {
                         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
                 };
+                Runnable confirmCopyToPhone = new Runnable() {
+                    @Override
+                    public void run() {
+                        Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to copy these files to your phone?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                        alert2.showAndWait();
+                        if (alert2.getResult() == ButtonType.YES) {
+                            Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
+                            alert3.setTitle("Processing");
+                            alert3.setHeaderText("Copying to phone...");
+                            alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                            alert3.show();
+                            Runnable update2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    alert3.setContentText("Done!");
+                                    alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                                }
+                            };
+                            Runnable r2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        copyToPhone();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Platform.runLater(update2);
+                                }
+                            };
+                            Thread t2 = new Thread(r2);
+                            t2.start();
+                        }
+                    }
+                };
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
@@ -244,36 +278,7 @@ public class LocalMusicManagerApp extends Application {
                             setEncoder("AAC Encoder");
                             convert();
                             view.getRelocateAAC().setDisable(false);
-                            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to copy these files to your phone?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-                            alert2.showAndWait();
-
-                            if (alert2.getResult() == ButtonType.YES) {
-                                Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
-                                alert3.setTitle("Processing");
-                                alert3.setHeaderText("Copying to phone...");
-                                alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-                                alert3.show();
-                                Runnable update2 = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        alert3.setContentText("Done!");
-                                        alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
-                                    }
-                                };
-                                Runnable r2 = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            copyToPhone();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                        Platform.runLater(update2);
-                                    }
-                                };
-                                Thread t2 = new Thread(r2);
-                                t2.start();
-                            }
+                            Platform.runLater(confirmCopyToPhone);
                         }
                         catch (IOException e) {
                             e.printStackTrace();
