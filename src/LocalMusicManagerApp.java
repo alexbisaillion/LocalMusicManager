@@ -390,14 +390,27 @@ public class LocalMusicManagerApp extends Application {
                 alert.setHeaderText("Relocating MP3 files...");
                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
                 alert.show();
-                try {
-                    relocate("MP3");
-                    view.getCleanUpItunes().setDisable(false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                alert.setContentText("Done!");
-                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                Runnable update = new Runnable() {
+                    @Override
+                    public void run() {
+                        view.getCleanUpItunes().setDisable(false);
+                        alert.setContentText("Done!");
+                        alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                    }
+                };
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            relocate("MP3");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Platform.runLater(update);
+                    }
+                };
+                Thread t = new Thread(r);
+                t.start();
             }
         });
 
