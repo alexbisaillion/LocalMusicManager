@@ -2,10 +2,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 import org.jaudiotagger.audio.AudioFile;
@@ -33,12 +34,13 @@ public class LocalMusicManagerApp extends Application {
     private HashMap<String, Path> conversionPaths;
     private HashMap<String, Path> devicePaths;
     private ArrayList<Path> sortedFiles;
-    private Path iTunesDirectory;
+    private Path iTunesMediaFolder;
     private ArrayList<Path> oldFolders;
 
     public void start(Stage primaryStage) {
         readSetupFile();
         if(!checkWritePermissions()) {
+            promptNewSetup();
             Alert alert = new Alert(Alert.AlertType.ERROR, "You have a faulty directory in your setup!");
             alert.showAndWait();
         }
@@ -450,7 +452,7 @@ public class LocalMusicManagerApp extends Application {
         primaryStage.show();
     }
 
-    public void addToItunes() throws IOException {
+    private void addToItunes() throws IOException {
         for(Path p: sortedFiles) {
             String[] args  = {"python", "src/scripts/addToLibrary.py", p.toString()};
             Process pro = Runtime.getRuntime().exec(args);
@@ -471,9 +473,9 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
-    public void convert() throws IOException {
+    private void convert() throws IOException {
         oldFolders = new ArrayList<>();
-        File directory = iTunesDirectory.toFile();
+        File directory = iTunesMediaFolder.toFile();
         File[] files = directory.listFiles();
         if(files != null) {
             for (File child : files) {
@@ -525,7 +527,7 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
-    public void cleanUpItunes() throws IOException {
+    private void cleanUpItunes() throws IOException {
         String[] args  = {"python", "src/scripts/deleteMissingTracks.py"};
         Process pro = Runtime.getRuntime().exec(args);
         try {
@@ -544,8 +546,8 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
-    public void relocate(String conversionType) throws IOException {
-        File directory = iTunesDirectory.toFile();
+    private void relocate(String conversionType) throws IOException {
+        File directory = iTunesMediaFolder.toFile();
         File[] files = directory.listFiles();
         if(files != null) {
             for (File child : files) {
@@ -557,8 +559,8 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
-    public void copyToPhone() throws IOException {
-        File directory = iTunesDirectory.toFile();
+    private void copyToPhone() throws IOException {
+        File directory = iTunesMediaFolder.toFile();
         File[] files = directory.listFiles();
         if(files != null) {
             for (File child : files) {
@@ -569,8 +571,8 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
-    public void renameForCarStereo() throws Exception {
-        File directory = iTunesDirectory.toFile();
+    private void renameForCarStereo() throws Exception {
+        File directory = iTunesMediaFolder.toFile();
         File[] files = directory.listFiles();
         if(files != null) {
             for (File artistDirectory : files) {
@@ -614,8 +616,7 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
-
-    public void readSetupFile() {
+    private void readSetupFile() {
         formatPaths = new HashMap<>();
         conversionPaths = new HashMap<>();
         devicePaths = new HashMap<>();
@@ -646,13 +647,14 @@ public class LocalMusicManagerApp extends Application {
             NodeList iTunesList = doc.getElementsByTagName("iTunesDirectory");
             for(int i=0; i<iTunesList.getLength(); i++) {
                 Element currentElement = (Element) iTunesList.item(i);
-                iTunesDirectory = Paths.get(currentElement.getElementsByTagName("path").item(0).getTextContent());
+                iTunesMediaFolder = Paths.get(currentElement.getElementsByTagName("path").item(0).getTextContent());
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
     }
-    public boolean checkWritePermissions() {
+
+    private boolean checkWritePermissions() {
         for(Path p: formatPaths.values()) {
             if(!p.toFile().canWrite()) {
                 return false;
@@ -668,10 +670,227 @@ public class LocalMusicManagerApp extends Application {
                 return false;
             }
         }
-        if(!iTunesDirectory.toFile().canWrite()) {
+        if(!iTunesMediaFolder.toFile().canWrite()) {
             return false;
         }
         return true;
+    }
+
+    private void promptNewSetup() {
+        Dialog dialog = new Dialog();
+        dialog.setTitle("Setup");
+        dialog.setHeaderText("You have a faulty setup file. Please fix before proceeding:");
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+
+        Label albumLabel = new Label("Albums");
+        Label mixtapeLabel = new Label("Mixtapes");
+        Label epLabel = new Label("EPs");
+        Label singleLabel = new Label("Singles");
+        Label soundtrackLabel = new Label("Soundtracks");
+        Label unreleasedLabel = new Label("Unreleased");
+        Label aacLabel = new Label("AAC");
+        Label mp3Label = new Label("MP3");
+        Label phoneLabel = new Label("Phone");
+        Label iTunesLabel = new Label("iTunes Media Folder");
+
+        gridPane.add(albumLabel, 0, 0);
+        gridPane.add(mixtapeLabel, 0, 1);
+        gridPane.add(epLabel, 0, 2);
+        gridPane.add(singleLabel, 0, 3);
+        gridPane.add(soundtrackLabel, 0, 4);
+        gridPane.add(unreleasedLabel, 0, 5);
+        gridPane.add(aacLabel, 0, 6);
+        gridPane.add(mp3Label, 0, 7);
+        gridPane.add(phoneLabel, 0, 8);
+        gridPane.add(iTunesLabel, 0, 9);
+
+        Button albumBrowse = new Button("BROWSE");
+        Button mixtapeBrowse = new Button("BROWSE");
+        Button epBrowse = new Button("BROWSE");
+        Button singleBrowse = new Button("BROWSE");
+        Button soundtrackBrowse = new Button("BROWSE");
+        Button unreleasedBrowse = new Button("BROWSE");
+        Button aacBrowse = new Button("BROWSE");
+        Button mp3Browse = new Button("BROWSE");
+        Button phoneBrowse = new Button("BROWSE");
+        Button iTunesBrowse = new Button("BROWSE");
+
+        albumBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+
+        gridPane.add(albumBrowse, 1, 0);
+        gridPane.add(mixtapeBrowse, 1, 1);
+        gridPane.add(epBrowse, 1, 2);
+        gridPane.add(singleBrowse, 1, 3);
+        gridPane.add(soundtrackBrowse, 1, 4);
+        gridPane.add(unreleasedBrowse, 1, 5);
+        gridPane.add(aacBrowse, 1, 6);
+        gridPane.add(mp3Browse, 1, 7);
+        gridPane.add(phoneBrowse, 1, 8);
+        gridPane.add(iTunesBrowse, 1, 9);
+
+        TextField albumTextField = new TextField(formatPaths.get(ReleaseFormat.Album).toString());
+        albumTextField.setEditable(false);
+        albumTextField.setDisable(true);
+        albumTextField.setPrefWidth(400);
+        if(!formatPaths.get(ReleaseFormat.Album).toFile().canWrite()) {
+            albumTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            albumTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField mixtapeTextField = new TextField(formatPaths.get(ReleaseFormat.Mixtape).toString());
+        mixtapeTextField.setEditable(false);
+        mixtapeTextField.setDisable(true);
+        mixtapeTextField.setPrefWidth(400);
+        if(!formatPaths.get(ReleaseFormat.Mixtape).toFile().canWrite()) {
+            mixtapeTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            mixtapeTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField epTextField = new TextField(formatPaths.get(ReleaseFormat.EP).toString());
+        epTextField.setEditable(false);
+        epTextField.setDisable(true);
+        epTextField.setPrefWidth(400);
+        if(!formatPaths.get(ReleaseFormat.EP).toFile().canWrite()) {
+            epTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            epTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField singleTextField = new TextField(formatPaths.get(ReleaseFormat.Single).toString());
+        singleTextField.setEditable(false);
+        singleTextField.setDisable(true);
+        singleTextField.setPrefWidth(400);
+        if(!formatPaths.get(ReleaseFormat.Single).toFile().canWrite()) {
+            singleTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            singleTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField soundtrackTextField = new TextField(formatPaths.get(ReleaseFormat.Soundtrack).toString());
+        soundtrackTextField.setEditable(false);
+        soundtrackTextField.setDisable(true);
+        soundtrackTextField.setPrefWidth(400);
+        if(!formatPaths.get(ReleaseFormat.Soundtrack).toFile().canWrite()) {
+            soundtrackTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            soundtrackTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField unreleasedTextField = new TextField(formatPaths.get(ReleaseFormat.Unreleased).toString());
+        unreleasedTextField.setEditable(false);
+        unreleasedTextField.setDisable(true);
+        unreleasedTextField.setPrefWidth(400);
+        if(!formatPaths.get(ReleaseFormat.Unreleased).toFile().canWrite()) {
+            unreleasedTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            unreleasedTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField aacTextField = new TextField(conversionPaths.get("AAC").toString());
+        aacTextField.setEditable(false);
+        aacTextField.setDisable(true);
+        aacTextField.setPrefWidth(400);
+        if(!conversionPaths.get("AAC").toFile().canWrite()) {
+            aacTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            aacTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField mp3TextField = new TextField(conversionPaths.get("MP3").toString());
+        mp3TextField.setEditable(false);
+        mp3TextField.setDisable(true);
+        mp3TextField.setPrefWidth(400);
+        if(!conversionPaths.get("MP3").toFile().canWrite()) {
+            mp3TextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            mp3TextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField phoneTextField = new TextField(devicePaths.get("Phone").toString());
+        phoneTextField.setEditable(false);
+        phoneTextField.setDisable(true);
+        phoneTextField.setPrefWidth(400);
+        if(!devicePaths.get("Phone").toFile().canWrite()) {
+            phoneTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            phoneTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        TextField iTunesTextField = new TextField(iTunesMediaFolder.toString());
+        iTunesTextField.setEditable(false);
+        iTunesTextField.setDisable(true);
+        iTunesTextField.setPrefWidth(400);
+        if(!iTunesMediaFolder.toFile().canWrite()) {
+            iTunesTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            iTunesTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
+        gridPane.add(albumTextField, 2, 0);
+        gridPane.add(mixtapeTextField, 2, 1);
+        gridPane.add(epTextField, 2, 2);
+        gridPane.add(singleTextField, 2, 3);
+        gridPane.add(soundtrackTextField, 2, 4);
+        gridPane.add(unreleasedTextField, 2, 5);
+        gridPane.add(aacTextField, 2, 6);
+        gridPane.add(mp3TextField, 2, 7);
+        gridPane.add(phoneTextField, 2, 8);
+        gridPane.add(iTunesTextField, 2, 9);
+
+        DirectoryChooser albumDirectory = new DirectoryChooser();
+        albumDirectory.setInitialDirectory(formatPaths.get(ReleaseFormat.Album).toFile());
+
+        DirectoryChooser mixtapeDirectory = new DirectoryChooser();
+        mixtapeDirectory.setInitialDirectory(formatPaths.get(ReleaseFormat.Mixtape).toFile());
+
+        DirectoryChooser epDirectory = new DirectoryChooser();
+        epDirectory.setInitialDirectory(formatPaths.get(ReleaseFormat.EP).toFile());
+
+        DirectoryChooser singleDirectory = new DirectoryChooser();
+        singleDirectory.setInitialDirectory(formatPaths.get(ReleaseFormat.Single).toFile());
+
+        DirectoryChooser soundtrackDirectory = new DirectoryChooser();
+        soundtrackDirectory.setInitialDirectory(formatPaths.get(ReleaseFormat.Soundtrack).toFile());
+
+        DirectoryChooser unreleasedDirectory = new DirectoryChooser();
+        unreleasedDirectory.setInitialDirectory(formatPaths.get(ReleaseFormat.Unreleased).toFile());
+
+        DirectoryChooser aacDirectory = new DirectoryChooser();
+        aacDirectory.setInitialDirectory(conversionPaths.get("AAC").toFile());
+
+        DirectoryChooser mp3Directory = new DirectoryChooser();
+        mp3Directory.setInitialDirectory(conversionPaths.get("MP3").toFile());
+
+        DirectoryChooser phoneDirectory = new DirectoryChooser();
+        phoneDirectory.setInitialDirectory(devicePaths.get("Phone").toFile());
+
+        DirectoryChooser iTunesDirectory = new DirectoryChooser();
+        iTunesDirectory.setInitialDirectory(iTunesMediaFolder.toFile());
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.getDialogPane().setContent(gridPane);
+
+        dialog.showAndWait();
     }
 
     public static void main(String[] args) {
