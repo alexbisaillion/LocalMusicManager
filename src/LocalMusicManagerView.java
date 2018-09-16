@@ -99,23 +99,18 @@ public class LocalMusicManagerView extends GridPane {
     public Button getAddToQueue() { return addToQueue; }
     public Button getAddToLibrary() { return addToLibrary; }
     public Button getAddToItunes() { return addToItunes; }
-
     public Button getConvertToAAC() {
         return convertToAAC;
     }
-
     public Button getConvertToMP3() {
         return convertToMP3;
     }
-
     public Button getRelocateAAC() {
         return relocateAAC;
     }
-
     public Button getRelocateMP3() {
         return relocateMP3;
     }
-
     public Button getCleanUpItunes() {
         return cleanUpItunes;
     }
