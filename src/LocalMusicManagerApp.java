@@ -2,11 +2,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 import org.jaudiotagger.audio.AudioFile;
@@ -41,9 +38,30 @@ public class LocalMusicManagerApp extends Application {
             e.printStackTrace();
         }
         if(!setupModel.checkWritePermissions()) {
-            promptNewSetup();
-            Alert alert = new Alert(Alert.AlertType.ERROR, "You have a faulty directory in your setup!");
-            alert.showAndWait();
+            SetupDialog setupDialog = new SetupDialog(setupModel);
+            setupDialog.showAndWait();
+
+            HashMap<ReleaseFormat, Path> revisedFormatPaths = new HashMap<>();
+            HashMap<String, Path> revisedConversionPaths = new HashMap<>();
+            HashMap<String, Path> revisedDevicePaths = new HashMap<>();
+            Path revisediTunesMediaFolder;
+
+            revisedFormatPaths.put(ReleaseFormat.Album, setupDialog.getAlbumPath());
+            revisedFormatPaths.put(ReleaseFormat.Mixtape, setupDialog.getMixtapePath());
+            revisedFormatPaths.put(ReleaseFormat.EP, setupDialog.getEpPath());
+            revisedFormatPaths.put(ReleaseFormat.Single, setupDialog.getSinglePath());
+            revisedFormatPaths.put(ReleaseFormat.Soundtrack, setupDialog.getSoundtrackPath());
+            revisedFormatPaths.put(ReleaseFormat.Unreleased, setupDialog.getUnreleasedPath());
+
+            revisedConversionPaths.put("AAC", setupDialog.getAacPath());
+            revisedConversionPaths.put("MP3", setupDialog.getMp3Path());
+
+            revisedDevicePaths.put("Phone", setupDialog.getPhonePath());
+
+            revisediTunesMediaFolder = setupDialog.getiTunesPath();
+
+            setupModel = new SetupModel(revisedFormatPaths, revisedConversionPaths, revisedDevicePaths, revisediTunesMediaFolder);
+
         }
         model = new ArrayList<>();
         view = new LocalMusicManagerView(model);
@@ -653,8 +671,32 @@ public class LocalMusicManagerApp extends Application {
         if(!SetupModel.isComplete(formatPaths, conversionPaths, devicePaths, iTunesMediaFolder)) {
             SetupDialog setupDialog = new SetupDialog(formatPaths, conversionPaths, devicePaths, iTunesMediaFolder);
             setupDialog.showAndWait();
+
+            HashMap<ReleaseFormat, Path> revisedFormatPaths = new HashMap<>();
+            HashMap<String, Path> revisedConversionPaths = new HashMap<>();
+            HashMap<String, Path> revisedDevicePaths = new HashMap<>();
+            Path revisediTunesMediaFolder;
+
+            revisedFormatPaths.put(ReleaseFormat.Album, setupDialog.getAlbumPath());
+            revisedFormatPaths.put(ReleaseFormat.Mixtape, setupDialog.getMixtapePath());
+            revisedFormatPaths.put(ReleaseFormat.EP, setupDialog.getEpPath());
+            revisedFormatPaths.put(ReleaseFormat.Single, setupDialog.getSinglePath());
+            revisedFormatPaths.put(ReleaseFormat.Soundtrack, setupDialog.getSoundtrackPath());
+            revisedFormatPaths.put(ReleaseFormat.Unreleased, setupDialog.getUnreleasedPath());
+
+            revisedConversionPaths.put("AAC", setupDialog.getAacPath());
+            revisedConversionPaths.put("MP3", setupDialog.getMp3Path());
+
+            revisedDevicePaths.put("Phone", setupDialog.getPhonePath());
+
+            revisediTunesMediaFolder = setupDialog.getiTunesPath();
+
+            setupModel = new SetupModel(revisedFormatPaths, revisedConversionPaths, revisedDevicePaths, revisediTunesMediaFolder);
+
         }
-        setupModel = new SetupModel(formatPaths, conversionPaths, devicePaths, iTunesMediaFolder);
+        else {
+            setupModel = new SetupModel(formatPaths, conversionPaths, devicePaths, iTunesMediaFolder);
+        }
     }
 
     private void promptNewSetup() {

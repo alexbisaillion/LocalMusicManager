@@ -2,35 +2,35 @@
 <directories>
     <formatDirectory>
         <format>Album</format>
-        <path>D:\Full Library\Albums</path>
+        <path>E:\Full Library\Albums</path>
     </formatDirectory>
     <formatDirectory>
         <format>Mixtape</format>
-        <path>D:\Full Library\Mixtapes</path>
+        <path>E:\Full Library\Mixtapes</path>
     </formatDirectory>
     <formatDirectory>
         <format>EP</format>
-        <path>D:\Full Library\EPs</path>
+        <path>E:\Full Library\EPs</path>
     </formatDirectory>
     <formatDirectory>
         <format>Single</format>
-        <path>D:\Full Library\Commercially Released Singles</path>
+        <path>E:\Full Library\Commercially Released Singles</path>
     </formatDirectory>
     <formatDirectory>
         <format>Soundtrack</format>
-        <path>D:\Full Library\Soundtracks</path>
+        <path>E:\Full Library\Soundtracks</path>
     </formatDirectory>
     <formatDirectory>
         <format>Unreleased</format>
-        <path>D:\Full Library\Unreleased</path>
+        <path>E:\Full Library\Unreleased</path>
     </formatDirectory>
     <conversionDirectory>
         <fileType>AAC</fileType>
-        <path>D:\AAC</path>
+        <path>E:\AAC</path>
     </conversionDirectory>
     <conversionDirectory>
         <fileType>MP3</fileType>
-        <path>D:\MP3</path>
+        <path>E:\MP3</path>
     </conversionDirectory>
     <deviceDirectory>
         <device>Phone</device>

@@ -1,8 +1,11 @@
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 
@@ -48,6 +51,16 @@ public class SetupDialog extends Dialog {
     private DirectoryChooser mp3Directory = new DirectoryChooser();
     private DirectoryChooser phoneDirectory = new DirectoryChooser();
     private DirectoryChooser iTunesDirectory = new DirectoryChooser();
+    private Path albumPath;
+    private Path mixtapePath;
+    private Path epPath;
+    private Path singlePath;
+    private Path soundtrackPath;
+    private Path unreleasedPath;
+    private Path aacPath;
+    private Path mp3Path;
+    private Path phonePath;
+    private Path iTunesPath;
 
     //Setup for complete but faulty paths
     public SetupDialog(SetupModel setupModel) {
@@ -87,6 +100,7 @@ public class SetupDialog extends Dialog {
             albumTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            albumPath = setupModel.getFormatPaths().get(ReleaseFormat.Album);
             albumTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -98,6 +112,7 @@ public class SetupDialog extends Dialog {
             mixtapeTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            mixtapePath = setupModel.getFormatPaths().get(ReleaseFormat.Mixtape);
             mixtapeTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -109,6 +124,7 @@ public class SetupDialog extends Dialog {
             epTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            epPath = setupModel.getFormatPaths().get(ReleaseFormat.EP);
             epTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -120,6 +136,7 @@ public class SetupDialog extends Dialog {
             singleTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            singlePath = setupModel.getFormatPaths().get(ReleaseFormat.Single);
             singleTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -131,6 +148,7 @@ public class SetupDialog extends Dialog {
             soundtrackTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            soundtrackPath = setupModel.getFormatPaths().get(ReleaseFormat.Soundtrack);
             soundtrackTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -142,6 +160,7 @@ public class SetupDialog extends Dialog {
             unreleasedTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            unreleasedPath = setupModel.getFormatPaths().get(ReleaseFormat.Unreleased);
             unreleasedTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -153,6 +172,7 @@ public class SetupDialog extends Dialog {
             aacTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            aacPath = setupModel.getConversionPaths().get("AAC");
             aacTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -164,6 +184,7 @@ public class SetupDialog extends Dialog {
             mp3TextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            mp3Path = setupModel.getConversionPaths().get("MP3");
             mp3TextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -175,6 +196,7 @@ public class SetupDialog extends Dialog {
             phoneTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            phonePath = setupModel.getDevicePaths().get("Phone");
             phoneTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -186,6 +208,7 @@ public class SetupDialog extends Dialog {
             iTunesTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            iTunesPath = setupModel.getiTunesMediaFolder();
             iTunesTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -200,20 +223,42 @@ public class SetupDialog extends Dialog {
         gridPane.add(phoneTextField, 2, 8);
         gridPane.add(iTunesTextField, 2, 9);
 
-        albumDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Album).toFile());
-        mixtapeDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Mixtape).toFile());
-        epDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.EP).toFile());
-        singleDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Single).toFile());
-        soundtrackDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Soundtrack).toFile());
-        unreleasedDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Unreleased).toFile());
-        aacDirectory.setInitialDirectory(setupModel.getConversionPaths().get("AAC").toFile());
-        mp3Directory.setInitialDirectory(setupModel.getConversionPaths().get("MP3").toFile());
-        phoneDirectory.setInitialDirectory(setupModel.getDevicePaths().get("Phone").toFile());
-        iTunesDirectory.setInitialDirectory(setupModel.getiTunesMediaFolder().toFile());
+        if(setupModel.getFormatPaths().get(ReleaseFormat.Album).toFile().canWrite()) {
+            albumDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Album).toFile());
+        }
+        if(setupModel.getFormatPaths().get(ReleaseFormat.Mixtape).toFile().canWrite()) {
+            mixtapeDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Mixtape).toFile());
+        }
+        if(setupModel.getFormatPaths().get(ReleaseFormat.EP).toFile().canWrite()) {
+            epDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.EP).toFile());
+        }
+        if(setupModel.getFormatPaths().get(ReleaseFormat.Single).toFile().canWrite()) {
+            singleDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Single).toFile());
+        }
+        if(setupModel.getFormatPaths().get(ReleaseFormat.Soundtrack).toFile().canWrite()) {
+            soundtrackDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Soundtrack).toFile());
+        }
+        if(setupModel.getFormatPaths().get(ReleaseFormat.Unreleased).toFile().canWrite()) {
+            unreleasedDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Unreleased).toFile());
+        }
+        if(setupModel.getConversionPaths().get("AAC").toFile().canWrite()) {
+            aacDirectory.setInitialDirectory(setupModel.getConversionPaths().get("AAC").toFile());
+        }
+        if(setupModel.getConversionPaths().get("MP3").toFile().canWrite()) {
+            mp3Directory.setInitialDirectory(setupModel.getConversionPaths().get("MP3").toFile());
+        }
+        if(setupModel.getDevicePaths().get("Phone").toFile().canWrite()) {
+            phoneDirectory.setInitialDirectory(setupModel.getDevicePaths().get("Phone").toFile());
+        }
+        if(setupModel.getiTunesMediaFolder().toFile().canWrite()) {
+            iTunesDirectory.setInitialDirectory(setupModel.getiTunesMediaFolder().toFile());
+        }
 
-        getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        getDialogPane().getButtonTypes().addAll(ButtonType.OK);
         getDialogPane().setContent(gridPane);
 
+        setEventHandlers();
+        update();
     }
 
     //Setup for incomplete paths
@@ -253,7 +298,9 @@ public class SetupDialog extends Dialog {
             albumTextField = new TextField(fp.get(ReleaseFormat.Album).toString());
             if (!fp.get(ReleaseFormat.Album).toFile().canWrite()) {
                 albumTextField.setStyle("-fx-control-inner-background: red;");
-            } else {
+            }
+            else {
+                albumPath = fp.get(ReleaseFormat.Album);
                 albumTextField.setStyle("-fx-control-inner-background: green;");
             }
         }
@@ -262,92 +309,149 @@ public class SetupDialog extends Dialog {
             albumTextField.setStyle("-fx-control-inner-background: red;");
         }
 
-        mixtapeTextField = new TextField(fp.get(ReleaseFormat.Mixtape).toString());
         mixtapeTextField.setEditable(false);
         mixtapeTextField.setDisable(true);
         mixtapeTextField.setPrefWidth(400);
-        if(!fp.get(ReleaseFormat.Mixtape).toFile().canWrite()) {
-            mixtapeTextField.setStyle("-fx-control-inner-background: red;");
+        if(fp.containsKey(ReleaseFormat.Mixtape)) {
+            mixtapeTextField = new TextField(fp.get(ReleaseFormat.Mixtape).toString());
+            if (!fp.get(ReleaseFormat.Mixtape).toFile().canWrite()) {
+                albumPath = fp.get(ReleaseFormat.Album);
+                mixtapeTextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                mixtapePath = fp.get(ReleaseFormat.Mixtape);
+                mixtapeTextField.setStyle("-fx-control-inner-background: green;");
+            }
         }
         else {
-            mixtapeTextField.setStyle("-fx-control-inner-background: green;");
+            mixtapeTextField = new TextField();
+            mixtapeTextField.setStyle("-fx-control-inner-background: red;");
         }
 
-        epTextField = new TextField(fp.get(ReleaseFormat.EP).toString());
         epTextField.setEditable(false);
         epTextField.setDisable(true);
         epTextField.setPrefWidth(400);
-        if(!fp.get(ReleaseFormat.EP).toFile().canWrite()) {
-            epTextField.setStyle("-fx-control-inner-background: red;");
+        if(fp.containsKey(ReleaseFormat.EP)) {
+            epTextField = new TextField(fp.get(ReleaseFormat.EP).toString());
+            if (!fp.get(ReleaseFormat.EP).toFile().canWrite()) {
+                epTextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                epPath = fp.get(ReleaseFormat.EP);
+                epTextField.setStyle("-fx-control-inner-background: green;");
+            }
         }
         else {
-            epTextField.setStyle("-fx-control-inner-background: green;");
+            epTextField = new TextField();
+            epTextField.setStyle("-fx-control-inner-background: red;");
         }
 
-        singleTextField = new TextField(fp.get(ReleaseFormat.Single).toString());
         singleTextField.setEditable(false);
         singleTextField.setDisable(true);
         singleTextField.setPrefWidth(400);
-        if(!fp.get(ReleaseFormat.Single).toFile().canWrite()) {
-            singleTextField.setStyle("-fx-control-inner-background: red;");
+        if(fp.containsKey(ReleaseFormat.Single)) {
+            singleTextField = new TextField(fp.get(ReleaseFormat.Single).toString());
+            if (!fp.get(ReleaseFormat.Single).toFile().canWrite()) {
+                singleTextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                singlePath = fp.get(ReleaseFormat.Single);
+                singleTextField.setStyle("-fx-control-inner-background: green;");
+            }
         }
         else {
-            singleTextField.setStyle("-fx-control-inner-background: green;");
+            singleTextField = new TextField();
+            singleTextField.setStyle("-fx-control-inner-background: red;");
         }
 
-        soundtrackTextField = new TextField(fp.get(ReleaseFormat.Soundtrack).toString());
         soundtrackTextField.setEditable(false);
         soundtrackTextField.setDisable(true);
         soundtrackTextField.setPrefWidth(400);
-        if(!fp.get(ReleaseFormat.Soundtrack).toFile().canWrite()) {
-            soundtrackTextField.setStyle("-fx-control-inner-background: red;");
+        if(fp.containsKey(ReleaseFormat.Soundtrack)) {
+            soundtrackTextField = new TextField(fp.get(ReleaseFormat.Soundtrack).toString());
+            if (!fp.get(ReleaseFormat.Soundtrack).toFile().canWrite()) {
+                soundtrackTextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                soundtrackPath = fp.get(ReleaseFormat.Soundtrack);
+                soundtrackTextField.setStyle("-fx-control-inner-background: green;");
+            }
         }
         else {
-            soundtrackTextField.setStyle("-fx-control-inner-background: green;");
+            soundtrackTextField = new TextField();
+            soundtrackTextField.setStyle("-fx-control-inner-background: red;");
         }
 
-        unreleasedTextField = new TextField(fp.get(ReleaseFormat.Unreleased).toString());
         unreleasedTextField.setEditable(false);
         unreleasedTextField.setDisable(true);
         unreleasedTextField.setPrefWidth(400);
-        if(!fp.get(ReleaseFormat.Unreleased).toFile().canWrite()) {
-            unreleasedTextField.setStyle("-fx-control-inner-background: red;");
+        if(fp.containsKey(ReleaseFormat.Unreleased)) {
+            unreleasedTextField = new TextField(fp.get(ReleaseFormat.Unreleased).toString());
+            if (!fp.get(ReleaseFormat.Unreleased).toFile().canWrite()) {
+                unreleasedTextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                unreleasedPath = fp.get(ReleaseFormat.Unreleased);
+                unreleasedTextField.setStyle("-fx-control-inner-background: green;");
+            }
         }
         else {
-            unreleasedTextField.setStyle("-fx-control-inner-background: green;");
+            unreleasedTextField = new TextField();
+            unreleasedTextField.setStyle("-fx-control-inner-background: red;");
         }
 
-        aacTextField = new TextField(cp.get("AAC").toString());
         aacTextField.setEditable(false);
         aacTextField.setDisable(true);
         aacTextField.setPrefWidth(400);
-        if(!cp.get("AAC").toFile().canWrite()) {
-            aacTextField.setStyle("-fx-control-inner-background: red;");
+        if(cp.containsKey("AAC")) {
+            aacTextField = new TextField(cp.get("AAC").toString());
+            if (!cp.get("AAC").toFile().canWrite()) {
+                aacTextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                aacPath = cp.get("AAC");
+                aacTextField.setStyle("-fx-control-inner-background: green;");
+            }
         }
         else {
-            aacTextField.setStyle("-fx-control-inner-background: green;");
+            aacTextField = new TextField();
+            aacTextField.setStyle("-fx-control-inner-background: red;");
         }
 
-        mp3TextField = new TextField(cp.get("MP3").toString());
         mp3TextField.setEditable(false);
         mp3TextField.setDisable(true);
         mp3TextField.setPrefWidth(400);
-        if(!cp.get("MP3").toFile().canWrite()) {
-            mp3TextField.setStyle("-fx-control-inner-background: red;");
+        if(cp.containsKey("MP3")) {
+            mp3TextField = new TextField(cp.get("MP3").toString());
+            if (!cp.get("MP3").toFile().canWrite()) {
+                mp3TextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                mp3Path = cp.get("MP3");
+                mp3TextField.setStyle("-fx-control-inner-background: green;");
+            }
         }
         else {
-            mp3TextField.setStyle("-fx-control-inner-background: green;");
+            mp3TextField = new TextField();
+            mp3TextField.setStyle("-fx-control-inner-background: red;");
         }
 
-        phoneTextField = new TextField(dp.get("Phone").toString());
         phoneTextField.setEditable(false);
         phoneTextField.setDisable(true);
         phoneTextField.setPrefWidth(400);
-        if(!dp.get("Phone").toFile().canWrite()) {
-            phoneTextField.setStyle("-fx-control-inner-background: red;");
+        if(dp.containsKey("Phone")) {
+            phoneTextField = new TextField(dp.get("Phone").toString());
+            if (!dp.get("Phone").toFile().canWrite()) {
+                phoneTextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                phonePath = dp.get("Phone");
+                phoneTextField.setStyle("-fx-control-inner-background: green;");
+            }
         }
         else {
-            phoneTextField.setStyle("-fx-control-inner-background: green;");
+            phoneTextField = new TextField();
+            phoneTextField.setStyle("-fx-control-inner-background: red;");
         }
 
         iTunesTextField = new TextField(imf.toString());
@@ -358,6 +462,7 @@ public class SetupDialog extends Dialog {
             iTunesTextField.setStyle("-fx-control-inner-background: red;");
         }
         else {
+            iTunesPath = imf;
             iTunesTextField.setStyle("-fx-control-inner-background: green;");
         }
 
@@ -372,20 +477,41 @@ public class SetupDialog extends Dialog {
         gridPane.add(phoneTextField, 2, 8);
         gridPane.add(iTunesTextField, 2, 9);
 
-        albumDirectory.setInitialDirectory(fp.get(ReleaseFormat.Album).toFile());
-        mixtapeDirectory.setInitialDirectory(fp.get(ReleaseFormat.Mixtape).toFile());
-        epDirectory.setInitialDirectory(fp.get(ReleaseFormat.EP).toFile());
-        singleDirectory.setInitialDirectory(fp.get(ReleaseFormat.Single).toFile());
-        soundtrackDirectory.setInitialDirectory(fp.get(ReleaseFormat.Soundtrack).toFile());
-        unreleasedDirectory.setInitialDirectory(fp.get(ReleaseFormat.Unreleased).toFile());
-        aacDirectory.setInitialDirectory(cp.get("AAC").toFile());
-        mp3Directory.setInitialDirectory(cp.get("MP3").toFile());
-        phoneDirectory.setInitialDirectory(dp.get("Phone").toFile());
-        iTunesDirectory.setInitialDirectory(imf.toFile());
-
-        getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        if(fp.get(ReleaseFormat.Album).toFile().canWrite()) {
+            albumDirectory.setInitialDirectory(fp.get(ReleaseFormat.Album).toFile());
+        }
+        if(fp.get(ReleaseFormat.Mixtape).toFile().canWrite()) {
+            mixtapeDirectory.setInitialDirectory(fp.get(ReleaseFormat.Mixtape).toFile());
+        }
+        if(fp.get(ReleaseFormat.EP).toFile().canWrite()) {
+            epDirectory.setInitialDirectory(fp.get(ReleaseFormat.EP).toFile());
+        }
+        if(fp.get(ReleaseFormat.Single).toFile().canWrite()) {
+            singleDirectory.setInitialDirectory(fp.get(ReleaseFormat.Single).toFile());
+        }
+        if(fp.get(ReleaseFormat.Soundtrack).toFile().canWrite()) {
+            soundtrackDirectory.setInitialDirectory(fp.get(ReleaseFormat.Soundtrack).toFile());
+        }
+        if(fp.get(ReleaseFormat.Unreleased).toFile().canWrite()) {
+            unreleasedDirectory.setInitialDirectory(fp.get(ReleaseFormat.Unreleased).toFile());
+        }
+        if(cp.get("AAC").toFile().canWrite()) {
+            aacDirectory.setInitialDirectory(cp.get("AAC").toFile());
+        }
+        if(cp.get("MP3").toFile().canWrite()) {
+            mp3Directory.setInitialDirectory(cp.get("MP3").toFile());
+        }
+        if(dp.get("Phone").toFile().canWrite()) {
+            phoneDirectory.setInitialDirectory(dp.get("Phone").toFile());
+        }
+        if(imf.toFile().canWrite()) {
+            iTunesDirectory.setInitialDirectory(imf.toFile());
+        }
+        getDialogPane().getButtonTypes().addAll(ButtonType.OK);
         getDialogPane().setContent(gridPane);
 
+        setEventHandlers();
+        update();
     }
 
     //Setup for missing setup file
@@ -501,13 +627,214 @@ public class SetupDialog extends Dialog {
         phoneDirectory = new DirectoryChooser();
         iTunesDirectory = new DirectoryChooser();
 
-        getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        getDialogPane().getButtonTypes().addAll(ButtonType.OK);
         getDialogPane().setContent(gridPane);
 
+        setEventHandlers();
+        update();
+    }
+
+    public Path getAlbumPath() { return albumPath; }
+    public Path getMixtapePath() { return mixtapePath; }
+    public Path getEpPath() { return epPath; }
+    public Path getSinglePath() { return singlePath; }
+    public Path getSoundtrackPath() { return soundtrackPath; }
+    public Path getUnreleasedPath() { return unreleasedPath; }
+    public Path getAacPath() { return aacPath; }
+    public Path getMp3Path() { return mp3Path; }
+    public Path getPhonePath() { return phonePath; }
+    public Path getiTunesPath() { return iTunesPath; }
+
+    private void setEventHandlers() {
+        albumBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = albumDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    albumPath = selectedFile.toPath();
+                    albumTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        albumTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        albumTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        mixtapeBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = mixtapeDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    mixtapePath = selectedFile.toPath();
+                    mixtapeTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        mixtapeTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        mixtapeTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        epBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = epDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    epPath = selectedFile.toPath();
+                    epTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        epTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        epTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        singleBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = singleDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    singlePath = selectedFile.toPath();
+                    singleTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        singleTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        singleTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        soundtrackBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = soundtrackDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    soundtrackPath = selectedFile.toPath();
+                    soundtrackTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        soundtrackTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        soundtrackTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        unreleasedBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = unreleasedDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    unreleasedPath = selectedFile.toPath();
+                    unreleasedTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        unreleasedTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        unreleasedTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        aacBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = aacDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    aacPath = selectedFile.toPath();
+                    aacTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        aacTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        aacTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        mp3Browse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = mp3Directory.showDialog(null);
+                if(selectedFile != null) {
+                    mp3Path = selectedFile.toPath();
+                    mp3TextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        mp3TextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        mp3TextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        phoneBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = phoneDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    phonePath = selectedFile.toPath();
+                    phoneTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        phoneTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        phoneTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
+        iTunesBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = iTunesDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    iTunesPath = selectedFile.toPath();
+                    iTunesTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        iTunesTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        iTunesTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
     }
 
     private void update() {
-
+        if(albumPath != null && albumPath.toFile().canWrite()
+                && mixtapePath != null && mixtapePath.toFile().canWrite()
+                && epPath != null && epPath.toFile().canWrite()
+                && singlePath != null && singlePath.toFile().canWrite()
+                && soundtrackPath != null && soundtrackPath.toFile().canWrite()
+                && unreleasedPath != null && unreleasedPath.toFile().canWrite()
+                && aacPath != null && aacPath.toFile().canWrite()
+                && mp3Path != null && mp3Path.toFile().canWrite()
+                && phonePath != null && phonePath.toFile().canWrite()
+                && iTunesPath != null && iTunesPath.toFile().canWrite()
+                ) {
+            getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+        }
+        else {
+            getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+        }
     }
 
 }
