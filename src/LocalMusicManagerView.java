@@ -22,7 +22,7 @@ public class LocalMusicManagerView extends GridPane {
     private Button convertToMP3;
     private Button relocateAAC;
     private Button relocateMP3;
-    private Button cleanUpItunes;
+    private Button completeAllActions;
 
     public LocalMusicManagerView(ArrayList<NewFile> m) {
         setHgap(10);
@@ -88,10 +88,9 @@ public class LocalMusicManagerView extends GridPane {
         convertAndRelocate.add(relocateMP3, 3, 0);
         bottom.add(convertAndRelocate, 0, 2, 7, 1);
 
-        cleanUpItunes = new Button("CLEAN UP iTUNES");
-        cleanUpItunes.setDisable(true);
-        cleanUpItunes.setMinWidth(1055);
-        bottom.add(cleanUpItunes, 0, 3, 7, 1);
+        completeAllActions = new Button("COMPLETE ALL ACTIONS");
+        completeAllActions.setMinWidth(1055);
+        bottom.add(completeAllActions, 0, 3, 7, 1);
 
         add(bottom, 0, 2);
     }
@@ -111,8 +110,8 @@ public class LocalMusicManagerView extends GridPane {
     public Button getRelocateMP3() {
         return relocateMP3;
     }
-    public Button getCleanUpItunes() {
-        return cleanUpItunes;
+    public Button getCompleteAllActions() {
+        return completeAllActions;
     }
 
     public void update() {
@@ -207,5 +206,16 @@ public class LocalMusicManagerView extends GridPane {
             });
 
         }
+    }
+
+    public void disableAll() {
+        addToQueue.setDisable(true);
+        addToLibrary.setDisable(true);
+        addToItunes.setDisable(true);
+        convertToAAC.setDisable(true);
+        convertToMP3.setDisable(true);
+        relocateAAC.setDisable(true);
+        relocateMP3.setDisable(true);
+        completeAllActions.setDisable(true);
     }
 }

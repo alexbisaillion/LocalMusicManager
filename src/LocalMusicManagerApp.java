@@ -21,7 +21,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class LocalMusicManagerApp extends Application {
@@ -94,111 +97,7 @@ public class LocalMusicManagerApp extends Application {
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        for(NewFile nf: model) {
-                            switch(nf.getExtension()) {
-                                case ".zip":
-                                    try {
-                                        Path p = SortArchiveFile.extractZIP(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
-                                        if(nf.getNewArtistTag() != null) {
-                                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
-                                        }
-                                        if(nf.getNewAlbumArtistTag() != null) {
-                                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
-                                        }
-                                        if(nf.getNewGenreTag() != null) {
-                                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
-                                        }
-                                        SortArchiveFile.correct(p);
-                                        if(!SortArchiveFile.isFaulty(p)) {
-                                            sortedFiles.add(SortArchiveFile.move(p));
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    break;
-                                case ".rar":
-                                    try {
-                                        Path p = SortArchiveFile.extractRar(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
-                                        if(nf.getNewArtistTag() != null) {
-                                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
-                                        }
-                                        if(nf.getNewAlbumArtistTag() != null) {
-                                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
-                                        }
-                                        if(nf.getNewGenreTag() != null) {
-                                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
-                                        }
-                                        SortArchiveFile.correct(p);
-                                        if(!SortArchiveFile.isFaulty(p)) {
-                                            sortedFiles.add(SortArchiveFile.move(p));
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    break;
-                                case ".7z":
-                                    try {
-                                        Path p = SortArchiveFile.extract7z(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
-                                        if(nf.getNewArtistTag() != null) {
-                                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
-                                        }
-                                        if(nf.getNewAlbumArtistTag() != null) {
-                                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
-                                        }
-                                        if(nf.getNewGenreTag() != null) {
-                                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
-                                        }
-                                        SortArchiveFile.correct(p);
-                                        if(!SortArchiveFile.isFaulty(p)) {
-                                            sortedFiles.add(SortArchiveFile.move(p));
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    break;
-                                default:
-                                    if(nf.getFormat() == ReleaseFormat.Single) {
-                                        try {
-                                            if(nf.getNewArtistTag() != null) {
-                                                System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
-                                            }
-                                            if(nf.getNewAlbumArtistTag() != null) {
-                                                System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
-                                            }
-                                            if(nf.getNewGenreTag() != null) {
-                                                System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
-                                            }
-                                            Path p = SortAudioFile.moveSingle(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
-                                            SortAudioFile.correct(p);
-                                            if(!SortAudioFile.isFaulty(p)) {
-                                                sortedFiles.add(p);
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    else {
-                                        try {
-                                            if(nf.getNewArtistTag() != null) {
-                                                System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
-                                            }
-                                            if(nf.getNewAlbumArtistTag() != null) {
-                                                System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
-                                            }
-                                            if(nf.getNewGenreTag() != null) {
-                                                System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
-                                            }
-                                            Path p = SortAudioFile.moveUnreleased(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
-                                            SortAudioFile.correct(p);
-                                            if(!SortAudioFile.isFaulty(p)) {
-                                                sortedFiles.add(p);
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                            }
-                        }
+                        addToLibrary();
                         Platform.runLater(update);
                     }
                 };
@@ -244,6 +143,9 @@ public class LocalMusicManagerApp extends Application {
         view.getConvertToAAC().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date currentDate = new Date();
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Processing");
                 alert.setHeaderText("Converting to AAC...");
@@ -292,6 +194,36 @@ public class LocalMusicManagerApp extends Application {
                         }
                     }
                 };
+                Runnable confirmDeleteFromItunes = new Runnable() {
+                    @Override
+                    public void run() {
+                        Alert alert4 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete the converted songs from iTunes?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                        alert4.showAndWait();
+                        if (alert4.getResult() == ButtonType.YES) {
+                            Alert alert5 = new Alert(Alert.AlertType.INFORMATION);
+                            alert5.setTitle("Processing");
+                            alert5.setHeaderText("Deleting from iTunes...");
+                            alert5.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                            alert5.show();
+                            Runnable update3 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    alert5.setContentText("Done!");
+                                    alert5.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                                }
+                            };
+                            Runnable r2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    deleteFromItunesByDate(currentDate);
+                                    Platform.runLater(update3);
+                                }
+                            };
+                            Thread t2 = new Thread(r2);
+                            t2.start();
+                        }
+                    }
+                };
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
@@ -300,6 +232,7 @@ public class LocalMusicManagerApp extends Application {
                             convert();
                             view.getRelocateAAC().setDisable(false);
                             Platform.runLater(confirmCopyToPhone);
+                            Platform.runLater(confirmDeleteFromItunes);
                         }
                         catch (IOException e) {
                             e.printStackTrace();
@@ -323,7 +256,7 @@ public class LocalMusicManagerApp extends Application {
                 Runnable update = new Runnable() {
                     @Override
                     public void run() {
-                        view.getCleanUpItunes().setDisable(false);
+                        view.getCompleteAllActions().setDisable(false);
                         alert.setContentText("Done!");
                         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
@@ -425,7 +358,7 @@ public class LocalMusicManagerApp extends Application {
                 Runnable update = new Runnable() {
                     @Override
                     public void run() {
-                        view.getCleanUpItunes().setDisable(false);
+                        view.getCompleteAllActions().setDisable(false);
                         alert.setContentText("Done!");
                         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
@@ -446,29 +379,151 @@ public class LocalMusicManagerApp extends Application {
             }
         });
 
-        view.getCleanUpItunes().setOnAction(new EventHandler<ActionEvent>() {
+        view.getCompleteAllActions().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                view.disableAll();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Processing");
-                alert.setHeaderText("Cleaning up iTunes...");
+                alert.setHeaderText("Completing all actions...");
                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
                 alert.show();
-                try {
-                    cleanUpItunes();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                alert.setContentText("Done!");
-                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                Runnable update = new Runnable() {
+                    @Override
+                    public void run() {
+                        view.getCompleteAllActions().setDisable(false);
+                        alert.setContentText("Done!");
+                        alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                    }
+                };
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            completeAllActions();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Platform.runLater(update);
+                    }
+                };
+                Thread t = new Thread(r);
+                t.start();
             }
         });
-
 
         primaryStage.setTitle("Local Music Manager");
         primaryStage.setResizable(true);
         primaryStage.setScene(new Scene(view, 1075, 500));
         primaryStage.show();
+    }
+
+    private void addToLibrary() {
+        for(NewFile nf: model) {
+            switch(nf.getExtension()) {
+                case ".zip":
+                    try {
+                        Path p = SortArchiveFile.extractZIP(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
+                        if(nf.getNewArtistTag() != null) {
+                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
+                        }
+                        if(nf.getNewAlbumArtistTag() != null) {
+                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
+                        }
+                        if(nf.getNewGenreTag() != null) {
+                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
+                        }
+                        SortArchiveFile.correct(p);
+                        if(!SortArchiveFile.isFaulty(p)) {
+                            sortedFiles.add(SortArchiveFile.move(p));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case ".rar":
+                    try {
+                        Path p = SortArchiveFile.extractRar(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
+                        if(nf.getNewArtistTag() != null) {
+                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
+                        }
+                        if(nf.getNewAlbumArtistTag() != null) {
+                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
+                        }
+                        if(nf.getNewGenreTag() != null) {
+                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
+                        }
+                        SortArchiveFile.correct(p);
+                        if(!SortArchiveFile.isFaulty(p)) {
+                            sortedFiles.add(SortArchiveFile.move(p));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case ".7z":
+                    try {
+                        Path p = SortArchiveFile.extract7z(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
+                        if(nf.getNewArtistTag() != null) {
+                            SortArchiveFile.changeArtist(p, nf.getNewArtistTag());
+                        }
+                        if(nf.getNewAlbumArtistTag() != null) {
+                            SortArchiveFile.changeAlbumArtist(p, nf.getNewAlbumArtistTag());
+                        }
+                        if(nf.getNewGenreTag() != null) {
+                            SortArchiveFile.changeGenre(p, nf.getNewGenreTag());
+                        }
+                        SortArchiveFile.correct(p);
+                        if(!SortArchiveFile.isFaulty(p)) {
+                            sortedFiles.add(SortArchiveFile.move(p));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+                    if(nf.getFormat() == ReleaseFormat.Single) {
+                        try {
+                            if(nf.getNewArtistTag() != null) {
+                                System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
+                            }
+                            if(nf.getNewAlbumArtistTag() != null) {
+                                System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
+                            }
+                            if(nf.getNewGenreTag() != null) {
+                                System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
+                            }
+                            Path p = SortAudioFile.moveSingle(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
+                            SortAudioFile.correct(p);
+                            if(!SortAudioFile.isFaulty(p)) {
+                                sortedFiles.add(p);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        try {
+                            if(nf.getNewArtistTag() != null) {
+                                System.out.println(SortAudioFile.changeArtist(nf.getSelectedFile().toPath(), nf.getNewArtistTag()));
+                            }
+                            if(nf.getNewAlbumArtistTag() != null) {
+                                System.out.println(SortAudioFile.changeAlbumArtist(nf.getSelectedFile().toPath(), nf.getNewAlbumArtistTag()));
+                            }
+                            if(nf.getNewGenreTag() != null) {
+                                System.out.println(SortAudioFile.changeGenre(nf.getSelectedFile().toPath(), nf.getNewGenreTag()));
+                            }
+                            Path p = SortAudioFile.moveUnreleased(nf.getSelectedFile(), setupModel.getFormatPaths().get(nf.getFormat()));
+                            SortAudioFile.correct(p);
+                            if(!SortAudioFile.isFaulty(p)) {
+                                sortedFiles.add(p);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+            }
+        }
     }
 
     private void addToItunes() throws IOException {
@@ -543,25 +598,6 @@ public class LocalMusicManagerApp extends Application {
                     e.printStackTrace();
                 }
             }
-        }
-    }
-
-    private void cleanUpItunes() throws IOException {
-        String[] args  = {"python", "src/scripts/deleteMissingTracks.py"};
-        Process pro = Runtime.getRuntime().exec(args);
-        try {
-            pro.waitFor();
-            BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
-            String line;
-            while((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
-            while((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
@@ -699,11 +735,21 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
-    private void promptNewSetup() {
-        SetupDialog dialog = new SetupDialog(setupModel);
-        dialog.showAndWait();
+    private void completeAllActions() throws Exception {
+        addToLibrary();
+        addToItunes();
+        setEncoder("AAC");
+        convert();
+        copyToPhone();
+        relocate("AAC");
+        setEncoder("MP3");
+        renameForCarStereo();
+        relocate("MP3");
     }
 
+    private void deleteFromItunesByDate(Date currentDate) {
+
+    }
     public static void main(String[] args) {
         launch(args);
     }
