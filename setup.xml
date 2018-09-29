@@ -36,6 +36,10 @@
         <device>Phone</device>
         <path>F:\AAC</path>
     </deviceDirectory>
+    <deviceDirectory>
+        <device>PC</device>
+        <path>C:\Users\abisa\Music\AAC</path>
+    </deviceDirectory>
     <iTunesDirectory>
         <path>C:\Users\abisa\Music\iTunes\iTunes Media\Music</path>
     </iTunesDirectory>

@@ -20,6 +20,7 @@ public class SetupDialog extends Dialog {
     private Label aacLabel = new Label("AAC");
     private Label mp3Label = new Label("MP3");
     private Label phoneLabel = new Label("Phone");
+    private Label pcLabel = new Label("PC");
     private Label iTunesLabel = new Label("iTunes Media Folder");
     private Button albumBrowse = new Button("BROWSE");
     private Button mixtapeBrowse = new Button("BROWSE");
@@ -30,6 +31,7 @@ public class SetupDialog extends Dialog {
     private Button aacBrowse = new Button("BROWSE");
     private Button mp3Browse = new Button("BROWSE");
     private Button phoneBrowse = new Button("BROWSE");
+    private Button pcBrowse = new Button("BROWSE");
     private Button iTunesBrowse = new Button("BROWSE");
     private TextField albumTextField;
     private TextField mixtapeTextField;
@@ -40,6 +42,7 @@ public class SetupDialog extends Dialog {
     private TextField aacTextField;
     private TextField mp3TextField;
     private TextField phoneTextField;
+    private TextField pcTextField;
     private TextField iTunesTextField;
     private DirectoryChooser albumDirectory = new DirectoryChooser();
     private DirectoryChooser mixtapeDirectory = new DirectoryChooser();
@@ -50,6 +53,7 @@ public class SetupDialog extends Dialog {
     private DirectoryChooser aacDirectory = new DirectoryChooser();
     private DirectoryChooser mp3Directory = new DirectoryChooser();
     private DirectoryChooser phoneDirectory = new DirectoryChooser();
+    private DirectoryChooser pcDirectory = new DirectoryChooser();
     private DirectoryChooser iTunesDirectory = new DirectoryChooser();
     private Path albumPath;
     private Path mixtapePath;
@@ -60,6 +64,7 @@ public class SetupDialog extends Dialog {
     private Path aacPath;
     private Path mp3Path;
     private Path phonePath;
+    private Path pcPath;
     private Path iTunesPath;
 
     //Setup for complete but faulty paths
@@ -79,7 +84,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacLabel, 0, 6);
         gridPane.add(mp3Label, 0, 7);
         gridPane.add(phoneLabel, 0, 8);
-        gridPane.add(iTunesLabel, 0, 9);
+        gridPane.add(pcLabel, 0, 9);
+        gridPane.add(iTunesLabel, 0, 10);
 
         gridPane.add(albumBrowse, 1, 0);
         gridPane.add(mixtapeBrowse, 1, 1);
@@ -90,7 +96,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacBrowse, 1, 6);
         gridPane.add(mp3Browse, 1, 7);
         gridPane.add(phoneBrowse, 1, 8);
-        gridPane.add(iTunesBrowse, 1, 9);
+        gridPane.add(pcBrowse, 1, 9);
+        gridPane.add(iTunesBrowse, 1, 10);
 
         albumTextField = new TextField(setupModel.getFormatPaths().get(ReleaseFormat.Album).toString());
         albumTextField.setEditable(false);
@@ -200,6 +207,18 @@ public class SetupDialog extends Dialog {
             phoneTextField.setStyle("-fx-control-inner-background: green;");
         }
 
+        pcTextField = new TextField(setupModel.getDevicePaths().get("PC").toString());
+        pcTextField.setEditable(false);
+        pcTextField.setDisable(true);
+        pcTextField.setPrefWidth(400);
+        if(!setupModel.getDevicePaths().get("PC").toFile().canWrite()) {
+            pcTextField.setStyle("-fx-control-inner-background: red;");
+        }
+        else {
+            pcPath = setupModel.getDevicePaths().get("PC");
+            pcTextField.setStyle("-fx-control-inner-background: green;");
+        }
+
         iTunesTextField = new TextField(setupModel.getiTunesMediaFolder().toString());
         iTunesTextField.setEditable(false);
         iTunesTextField.setDisable(true);
@@ -221,7 +240,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacTextField, 2, 6);
         gridPane.add(mp3TextField, 2, 7);
         gridPane.add(phoneTextField, 2, 8);
-        gridPane.add(iTunesTextField, 2, 9);
+        gridPane.add(pcTextField, 2, 9);
+        gridPane.add(iTunesTextField, 2, 10);
 
         if(setupModel.getFormatPaths().get(ReleaseFormat.Album).toFile().canWrite()) {
             albumDirectory.setInitialDirectory(setupModel.getFormatPaths().get(ReleaseFormat.Album).toFile());
@@ -249,6 +269,9 @@ public class SetupDialog extends Dialog {
         }
         if(setupModel.getDevicePaths().get("Phone").toFile().canWrite()) {
             phoneDirectory.setInitialDirectory(setupModel.getDevicePaths().get("Phone").toFile());
+        }
+        if(setupModel.getDevicePaths().get("PC").toFile().canWrite()) {
+            pcDirectory.setInitialDirectory(setupModel.getDevicePaths().get("PC").toFile());
         }
         if(setupModel.getiTunesMediaFolder().toFile().canWrite()) {
             iTunesDirectory.setInitialDirectory(setupModel.getiTunesMediaFolder().toFile());
@@ -278,7 +301,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacLabel, 0, 6);
         gridPane.add(mp3Label, 0, 7);
         gridPane.add(phoneLabel, 0, 8);
-        gridPane.add(iTunesLabel, 0, 9);
+        gridPane.add(pcLabel, 0, 9);
+        gridPane.add(iTunesLabel, 0, 10);
 
         gridPane.add(albumBrowse, 1, 0);
         gridPane.add(mixtapeBrowse, 1, 1);
@@ -289,7 +313,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacBrowse, 1, 6);
         gridPane.add(mp3Browse, 1, 7);
         gridPane.add(phoneBrowse, 1, 8);
-        gridPane.add(iTunesBrowse, 1, 9);
+        gridPane.add(pcBrowse, 1, 9);
+        gridPane.add(iTunesBrowse, 1, 10);
 
         albumTextField.setEditable(false);
         albumTextField.setDisable(true);
@@ -454,6 +479,24 @@ public class SetupDialog extends Dialog {
             phoneTextField.setStyle("-fx-control-inner-background: red;");
         }
 
+        pcTextField.setEditable(false);
+        pcTextField.setDisable(true);
+        pcTextField.setPrefWidth(400);
+        if(dp.containsKey("PC")) {
+            pcTextField = new TextField(dp.get("PC").toString());
+            if (!dp.get("PC").toFile().canWrite()) {
+                pcTextField.setStyle("-fx-control-inner-background: red;");
+            }
+            else {
+                pcPath = dp.get("PC");
+                pcTextField.setStyle("-fx-control-inner-background: green;");
+            }
+        }
+        else {
+            pcTextField = new TextField();
+            pcTextField.setStyle("-fx-control-inner-background: red;");
+        }
+
         iTunesTextField = new TextField(imf.toString());
         iTunesTextField.setEditable(false);
         iTunesTextField.setDisable(true);
@@ -475,7 +518,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacTextField, 2, 6);
         gridPane.add(mp3TextField, 2, 7);
         gridPane.add(phoneTextField, 2, 8);
-        gridPane.add(iTunesTextField, 2, 9);
+        gridPane.add(pcTextField, 2, 9);
+        gridPane.add(iTunesTextField, 2, 10);
 
         if(fp.get(ReleaseFormat.Album).toFile().canWrite()) {
             albumDirectory.setInitialDirectory(fp.get(ReleaseFormat.Album).toFile());
@@ -503,6 +547,9 @@ public class SetupDialog extends Dialog {
         }
         if(dp.get("Phone").toFile().canWrite()) {
             phoneDirectory.setInitialDirectory(dp.get("Phone").toFile());
+        }
+        if(dp.get("PC").toFile().canWrite()) {
+            pcDirectory.setInitialDirectory(dp.get("PC").toFile());
         }
         if(imf.toFile().canWrite()) {
             iTunesDirectory.setInitialDirectory(imf.toFile());
@@ -532,7 +579,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacLabel, 0, 6);
         gridPane.add(mp3Label, 0, 7);
         gridPane.add(phoneLabel, 0, 8);
-        gridPane.add(iTunesLabel, 0, 9);
+        gridPane.add(pcLabel, 0, 9);
+        gridPane.add(iTunesLabel, 0, 10);
 
         gridPane.add(albumBrowse, 1, 0);
         gridPane.add(mixtapeBrowse, 1, 1);
@@ -543,7 +591,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacBrowse, 1, 6);
         gridPane.add(mp3Browse, 1, 7);
         gridPane.add(phoneBrowse, 1, 8);
-        gridPane.add(iTunesBrowse, 1, 9);
+        gridPane.add(pcBrowse, 1, 9);
+        gridPane.add(iTunesBrowse, 1, 10);
 
         albumTextField = new TextField();
         albumTextField.setEditable(false);
@@ -599,6 +648,12 @@ public class SetupDialog extends Dialog {
         phoneTextField.setPrefWidth(400);
         phoneTextField.setStyle("-fx-control-inner-background: red;");
 
+        pcTextField = new TextField();
+        pcTextField.setEditable(false);
+        pcTextField.setDisable(true);
+        pcTextField.setPrefWidth(400);
+        pcTextField.setStyle("-fx-control-inner-background: red;");
+
         iTunesTextField = new TextField();
         iTunesTextField.setEditable(false);
         iTunesTextField.setDisable(true);
@@ -614,7 +669,8 @@ public class SetupDialog extends Dialog {
         gridPane.add(aacTextField, 2, 6);
         gridPane.add(mp3TextField, 2, 7);
         gridPane.add(phoneTextField, 2, 8);
-        gridPane.add(iTunesTextField, 2, 9);
+        gridPane.add(pcTextField, 2, 9);
+        gridPane.add(iTunesTextField, 2, 10);
 
         albumDirectory = new DirectoryChooser();
         mixtapeDirectory = new DirectoryChooser();
@@ -625,6 +681,7 @@ public class SetupDialog extends Dialog {
         aacDirectory = new DirectoryChooser();
         mp3Directory = new DirectoryChooser();
         phoneDirectory = new DirectoryChooser();
+        pcDirectory = new DirectoryChooser();
         iTunesDirectory = new DirectoryChooser();
 
         getDialogPane().getButtonTypes().addAll(ButtonType.OK);
@@ -643,6 +700,7 @@ public class SetupDialog extends Dialog {
     public Path getAacPath() { return aacPath; }
     public Path getMp3Path() { return mp3Path; }
     public Path getPhonePath() { return phonePath; }
+    public Path getPCPath() { return pcPath; }
     public Path getiTunesPath() { return iTunesPath; }
 
     private void setEventHandlers() {
@@ -799,6 +857,23 @@ public class SetupDialog extends Dialog {
                 update();
             }
         });
+        pcBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                File selectedFile = pcDirectory.showDialog(null);
+                if(selectedFile != null) {
+                    pcPath = selectedFile.toPath();
+                    pcTextField.setText(selectedFile.getPath());
+                    if(selectedFile.canWrite()) {
+                        pcTextField.setStyle("-fx-control-inner-background: green;");
+                    }
+                    else {
+                        pcTextField.setStyle("-fx-control-inner-background: red;");
+                    }
+                }
+                update();
+            }
+        });
         iTunesBrowse.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -828,6 +903,7 @@ public class SetupDialog extends Dialog {
                 && aacPath != null && aacPath.toFile().canWrite()
                 && mp3Path != null && mp3Path.toFile().canWrite()
                 && phonePath != null && phonePath.toFile().canWrite()
+                && pcPath != null && pcPath.toFile().canWrite()
                 && iTunesPath != null && iTunesPath.toFile().canWrite()
                 ) {
             getDialogPane().lookupButton(ButtonType.OK).setDisable(false);

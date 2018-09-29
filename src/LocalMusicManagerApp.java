@@ -60,6 +60,7 @@ public class LocalMusicManagerApp extends Application {
             revisedConversionPaths.put("MP3", setupDialog.getMp3Path());
 
             revisedDevicePaths.put("Phone", setupDialog.getPhonePath());
+            revisedDevicePaths.put("PC", setupDialog.getPCPath());
 
             revisediTunesMediaFolder = setupDialog.getiTunesPath();
 
@@ -81,6 +82,9 @@ public class LocalMusicManagerApp extends Application {
         view.getAddToLibrary().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                view.getAddToQueue().setDisable(true);
+                view.getAddToLibrary().setDisable(true);
+                view.getCompleteAllActions().setDisable(true);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Processing");
                 alert.setHeaderText("Adding music to library...");
@@ -143,7 +147,7 @@ public class LocalMusicManagerApp extends Application {
         view.getConvertToAAC().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                view.getConvertToMP3().setDisable(true);
                 Date currentDate = new Date();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -194,18 +198,18 @@ public class LocalMusicManagerApp extends Application {
                         }
                     }
                 };
-                Runnable confirmDeleteFromItunes = new Runnable() {
+                Runnable confirmCopyToPC = new Runnable() {
                     @Override
                     public void run() {
-                        Alert alert4 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete the converted songs from iTunes?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                        Alert alert4 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to copy these files to your PC?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
                         alert4.showAndWait();
                         if (alert4.getResult() == ButtonType.YES) {
                             Alert alert5 = new Alert(Alert.AlertType.INFORMATION);
                             alert5.setTitle("Processing");
-                            alert5.setHeaderText("Deleting from iTunes...");
+                            alert5.setHeaderText("Copying to PC...");
                             alert5.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
                             alert5.show();
-                            Runnable update3 = new Runnable() {
+                            Runnable update2 = new Runnable() {
                                 @Override
                                 public void run() {
                                     alert5.setContentText("Done!");
@@ -215,7 +219,45 @@ public class LocalMusicManagerApp extends Application {
                             Runnable r2 = new Runnable() {
                                 @Override
                                 public void run() {
-                                    deleteFromItunesByDate(currentDate);
+                                    try {
+                                        copyToPC();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Platform.runLater(update2);
+                                }
+                            };
+                            Thread t2 = new Thread(r2);
+                            t2.start();
+                        }
+                    }
+                };
+                Runnable confirmDeleteFromItunes = new Runnable() {
+                    @Override
+                    public void run() {
+                        Alert alert6 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete the converted songs from iTunes?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                        alert6.showAndWait();
+                        if (alert6.getResult() == ButtonType.YES) {
+                            Alert alert7 = new Alert(Alert.AlertType.INFORMATION);
+                            alert7.setTitle("Processing");
+                            alert7.setHeaderText("Deleting from iTunes...");
+                            alert7.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                            alert7.show();
+                            Runnable update3 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    alert7.setContentText("Done!");
+                                    alert7.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                                }
+                            };
+                            Runnable r2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        deleteFromItunesByDate(currentDate);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     Platform.runLater(update3);
                                 }
                             };
@@ -231,8 +273,9 @@ public class LocalMusicManagerApp extends Application {
                             setEncoder("AAC Encoder");
                             convert();
                             view.getRelocateAAC().setDisable(false);
-                            Platform.runLater(confirmCopyToPhone);
                             Platform.runLater(confirmDeleteFromItunes);
+                            Platform.runLater(confirmCopyToPhone);
+                            Platform.runLater(confirmCopyToPC);
                         }
                         catch (IOException e) {
                             e.printStackTrace();
@@ -256,7 +299,7 @@ public class LocalMusicManagerApp extends Application {
                 Runnable update = new Runnable() {
                     @Override
                     public void run() {
-                        view.getCompleteAllActions().setDisable(false);
+                        view.getConvertToMP3().setDisable(false);
                         alert.setContentText("Done!");
                         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
@@ -280,6 +323,9 @@ public class LocalMusicManagerApp extends Application {
         view.getConvertToMP3().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                view.getConvertToAAC().setDisable(true);
+                Date currentDate = new Date();
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Processing");
                 alert.setHeaderText("Converting to MP3...");
@@ -327,6 +373,40 @@ public class LocalMusicManagerApp extends Application {
                         }
                     }
                 };
+                Runnable confirmDeleteFromItunes = new Runnable() {
+                    @Override
+                    public void run() {
+                        Alert alert4 = new Alert(Alert.AlertType.CONFIRMATION, "Would you like to delete the converted songs from iTunes?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                        alert4.showAndWait();
+                        if (alert4.getResult() == ButtonType.YES) {
+                            Alert alert5 = new Alert(Alert.AlertType.INFORMATION);
+                            alert5.setTitle("Processing");
+                            alert5.setHeaderText("Deleting from iTunes...");
+                            alert5.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                            alert5.show();
+                            Runnable update3 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    alert5.setContentText("Done!");
+                                    alert5.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                                }
+                            };
+                            Runnable r2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        deleteFromItunesByDate(currentDate);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Platform.runLater(update3);
+                                }
+                            };
+                            Thread t2 = new Thread(r2);
+                            t2.start();
+                        }
+                    }
+                };
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
@@ -334,6 +414,7 @@ public class LocalMusicManagerApp extends Application {
                             setEncoder("MP3 Encoder");
                             convert();
                             view.getRelocateMP3().setDisable(false);
+                            Platform.runLater(confirmDeleteFromItunes);
                             Platform.runLater(confirmRenameForCarStereo);
                         }
                         catch (Exception e) {
@@ -358,7 +439,7 @@ public class LocalMusicManagerApp extends Application {
                 Runnable update = new Runnable() {
                     @Override
                     public void run() {
-                        view.getCompleteAllActions().setDisable(false);
+                        view.getConvertToAAC().setDisable(false);
                         alert.setContentText("Done!");
                         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
@@ -547,6 +628,25 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
+    private void addToItunesFromPC() throws IOException {
+        String[] args  = {"python", "src/scripts/addToLibrary.py", setupModel.getDevicePaths().get("PC").toString()};
+        Process pro = Runtime.getRuntime().exec(args);
+        try {
+            pro.waitFor();
+            BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            while((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
+            while((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void convert() throws IOException {
         oldFolders = new ArrayList<>();
         File directory = setupModel.getiTunesMediaFolder().toFile();
@@ -621,6 +721,18 @@ public class LocalMusicManagerApp extends Application {
             for (File child : files) {
                 if(child.isDirectory() && !oldFolders.contains(child.toPath())) {
                     FileUtils.copyDirectoryToDirectory(child, setupModel.getDevicePaths().get("Phone").toFile());
+                }
+            }
+        }
+    }
+
+    private void copyToPC() throws IOException {
+        File directory = setupModel.getiTunesMediaFolder().toFile();
+        File[] files = directory.listFiles();
+        if(files != null) {
+            for (File child : files) {
+                if(child.isDirectory() && !oldFolders.contains(child.toPath())) {
+                    FileUtils.copyDirectoryToDirectory(child, setupModel.getDevicePaths().get("PC").toFile());
                 }
             }
         }
@@ -724,6 +836,7 @@ public class LocalMusicManagerApp extends Application {
             revisedConversionPaths.put("MP3", setupDialog.getMp3Path());
 
             revisedDevicePaths.put("Phone", setupDialog.getPhonePath());
+            revisedDevicePaths.put("PC", setupDialog.getPCPath());
 
             revisediTunesMediaFolder = setupDialog.getiTunesPath();
 
@@ -735,21 +848,50 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
+    private void deleteFromItunesByDate(Date currentDate) throws IOException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String[] args  = {"python", "src/scripts/deleteFromItunesByDate.py", setupModel.getiTunesMediaFolder().toString(), dateFormat.format(currentDate) + " GMT+0000"};
+        Process pro = Runtime.getRuntime().exec(args);
+        try {
+            pro.waitFor();
+            BufferedReader br = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+            String line;
+            while((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
+            while((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void completeAllActions() throws Exception {
+        Date addToLibraryDate = new Date();
         addToLibrary();
         addToItunes();
-        setEncoder("AAC");
+
+        setEncoder("AAC Encoder");
+        Date convertToAACDate = new Date();
         convert();
         copyToPhone();
+        copyToPC();
+        deleteFromItunesByDate(convertToAACDate);
         relocate("AAC");
-        setEncoder("MP3");
+
+        setEncoder("MP3 Encoder");
+        Date convertToMP3Date = new Date();
+        convert();
         renameForCarStereo();
+        deleteFromItunesByDate(convertToMP3Date);
         relocate("MP3");
+
+        deleteFromItunesByDate(addToLibraryDate);
+        addToItunesFromPC();
     }
 
-    private void deleteFromItunesByDate(Date currentDate) {
-
-    }
     public static void main(String[] args) {
         launch(args);
     }

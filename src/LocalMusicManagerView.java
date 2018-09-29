@@ -90,6 +90,7 @@ public class LocalMusicManagerView extends GridPane {
 
         completeAllActions = new Button("COMPLETE ALL ACTIONS");
         completeAllActions.setMinWidth(1055);
+        completeAllActions.setDisable(true);
         bottom.add(completeAllActions, 0, 3, 7, 1);
 
         add(bottom, 0, 2);
@@ -124,12 +125,15 @@ public class LocalMusicManagerView extends GridPane {
 
         if(model.size() == 0) {
             addToLibrary.setDisable(true);
+            completeAllActions.setDisable(true);
         }
         else {
             addToLibrary.setDisable(false);
+            completeAllActions.setDisable(false);
             for (NewFile nf : model) {
                 if (nf.getSelectedFile() == null || nf.getFormat() == null) {
                     addToLibrary.setDisable(true);
+                    completeAllActions.setDisable(true);
                     break;
                 }
             }
