@@ -60,6 +60,9 @@ public class NewFileGridPane extends GridPane {
         add(albumArtist, 4, 0);
         add(genre, 5, 0);
         add(delete, 6, 0);
+
+        setMinWidth(1070);
+        setMaxWidth(1070);
     }
 
     public Button getBrowse() {

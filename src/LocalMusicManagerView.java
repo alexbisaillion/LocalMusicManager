@@ -3,6 +3,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
@@ -14,6 +15,7 @@ public class LocalMusicManagerView extends GridPane {
     public GridPane top;
     public Label title;
     public GridPane middle;
+    public ScrollPane middleScrollPane;
     public GridPane bottom;
     private Button addToQueue;
     private Button addToLibrary;
@@ -43,7 +45,19 @@ public class LocalMusicManagerView extends GridPane {
         for(NewFile nf: model) {
             middle.add(nf.getView(), 0, middle.getChildren().size());
         }
-        add(middle, 0, 1);
+        middle.setMinWidth(1070);
+        middle.setMaxWidth(1070);
+        middleScrollPane = new ScrollPane();
+        middleScrollPane.setPadding(new Insets(10,10,10,10));
+        middleScrollPane.setFitToWidth(true);
+        middleScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        middleScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        middleScrollPane.setMinWidth(1090);
+        middleScrollPane.setMaxWidth(1090);
+        middleScrollPane.setMinHeight(300);
+        middleScrollPane.setMaxHeight(300);
+        middleScrollPane.setContent(middle);
+        add(middleScrollPane, 0, 1);
 
         //BOTTOM COMPONENTS
         bottom = new GridPane();
@@ -54,42 +68,42 @@ public class LocalMusicManagerView extends GridPane {
         addToQueue.setMaxWidth(195);
         bottom.add(addToQueue, 0, 0, 1, 1);
         addToLibrary = new Button("ADD TO LIBRARY");
-        addToLibrary.setMinWidth(850);
-        addToLibrary.setMaxWidth(850);
+        addToLibrary.setMinWidth(885);
+        addToLibrary.setMaxWidth(885);
         bottom.add(addToLibrary, 1, 0, 2, 1);
         addToLibrary.setDisable(true);
         addToItunes = new Button("ADD TO iTUNES");
         addToItunes.setDisable(true);
-        addToItunes.setMinWidth(1055);
-        addToItunes.setMaxWidth(1055);
+        addToItunes.setMinWidth(1090);
+        addToItunes.setMaxWidth(1090);
         bottom.add(addToItunes, 0, 1, 7, 1);
 
         GridPane convertAndRelocate = new GridPane();
         convertAndRelocate.setHgap(10);
         convertToAAC = new Button("CONVERT TO AAC");
         convertToAAC.setDisable(true);
-        convertToAAC.setMinWidth(256);
-        convertToAAC.setMaxWidth(256);
+        convertToAAC.setMinWidth(265);
+        convertToAAC.setMaxWidth(265);
         convertAndRelocate.add(convertToAAC, 0, 0);
         relocateAAC = new Button("RELOCATE AAC");
         relocateAAC.setDisable(true);
-        relocateAAC.setMinWidth(256);
-        relocateAAC.setMaxWidth(256);
+        relocateAAC.setMinWidth(265);
+        relocateAAC.setMaxWidth(265);
         convertAndRelocate.add(relocateAAC, 1, 0);
         convertToMP3 = new Button("CONVERT TO MP3");
         convertToMP3.setDisable(true);
-        convertToMP3.setMinWidth(256);
-        convertToMP3.setMaxWidth(256);
+        convertToMP3.setMinWidth(265);
+        convertToMP3.setMaxWidth(265);
         convertAndRelocate.add(convertToMP3, 2, 0);
         relocateMP3 = new Button("RELOCATE MP3");
         relocateMP3.setDisable(true);
-        relocateMP3.setMinWidth(256);
-        relocateMP3.setMaxWidth(256);
+        relocateMP3.setMinWidth(265);
+        relocateMP3.setMaxWidth(265);
         convertAndRelocate.add(relocateMP3, 3, 0);
         bottom.add(convertAndRelocate, 0, 2, 7, 1);
 
         completeAllActions = new Button("COMPLETE ALL ACTIONS");
-        completeAllActions.setMinWidth(1055);
+        completeAllActions.setMinWidth(1090);
         completeAllActions.setDisable(true);
         bottom.add(completeAllActions, 0, 3, 7, 1);
 
@@ -121,7 +135,19 @@ public class LocalMusicManagerView extends GridPane {
         for(NewFile nf: model) {
             middle.add(nf.getView(), 0, middle.getChildren().size());
         }
-        add(middle, 0, 1);
+        middle.setMinWidth(1070);
+        middle.setMaxWidth(1070);
+        middleScrollPane = new ScrollPane();
+        middleScrollPane.setPadding(new Insets(10,10,10,10));
+        middleScrollPane.setFitToWidth(true);
+        middleScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        middleScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        middleScrollPane.setMinWidth(1090);
+        middleScrollPane.setMaxWidth(1090);
+        middleScrollPane.setMinHeight(300);
+        middleScrollPane.setMaxHeight(300);
+        middleScrollPane.setContent(middle);
+        add(middleScrollPane, 0, 1);
 
         if(model.size() == 0) {
             addToLibrary.setDisable(true);

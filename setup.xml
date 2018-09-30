@@ -22,7 +22,7 @@
     </formatDirectory>
     <formatDirectory>
         <format>Unreleased</format>
-        <path>E:\Full Library\Unreleased</path>
+        <path>E:\Full Library\Organized Unreleased</path>
     </formatDirectory>
     <conversionDirectory>
         <fileType>AAC</fileType>
@@ -34,7 +34,7 @@
     </conversionDirectory>
     <deviceDirectory>
         <device>Phone</device>
-        <path>F:\AAC</path>
+        <path>C:\Users\abisa\Music\AAC</path>
     </deviceDirectory>
     <deviceDirectory>
         <device>PC</device>
