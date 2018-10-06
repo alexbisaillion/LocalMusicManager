@@ -1,22 +1,25 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class LocalMusicManagerView extends GridPane {
-    public ArrayList<NewFile> model;
-    public GridPane top;
-    public Label title;
-    public GridPane middle;
-    public ScrollPane middleScrollPane;
-    public GridPane bottom;
+    private ArrayList<NewFile> model;
+    private GridPane top;
+    private Label title;
+    private GridPane middle;
+    private ScrollPane middleScrollPane;
+    private GridPane bottom;
     private Button addToQueue;
     private Button addToLibrary;
     private Button addToItunes;
@@ -35,7 +38,8 @@ public class LocalMusicManagerView extends GridPane {
 
         //TOP COMPONENTS
         top = new GridPane();
-        title = new Label("LOCAL MUSIC MANAGER");
+        top.setAlignment(Pos.CENTER);
+        title = new Label("Local Music Manager");
         top.add(title, 0, 0, 3, 1);
         add(top, 0, 0);
 
@@ -54,8 +58,8 @@ public class LocalMusicManagerView extends GridPane {
         middleScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         middleScrollPane.setMinWidth(1090);
         middleScrollPane.setMaxWidth(1090);
-        middleScrollPane.setMinHeight(300);
-        middleScrollPane.setMaxHeight(300);
+        middleScrollPane.setMinHeight(355);
+        middleScrollPane.setMaxHeight(355);
         middleScrollPane.setContent(middle);
         add(middleScrollPane, 0, 1);
 
@@ -64,19 +68,19 @@ public class LocalMusicManagerView extends GridPane {
         bottom.setHgap(10);
         bottom.setVgap(10);
         addToQueue = new Button("ADD TO QUEUE");
-        addToQueue.setMinWidth(195);
-        addToQueue.setMaxWidth(195);
+        addToQueue.setMinWidth(200);
+        addToQueue.setMaxWidth(200);
         bottom.add(addToQueue, 0, 0, 1, 1);
         addToLibrary = new Button("ADD TO LIBRARY");
-        addToLibrary.setMinWidth(885);
-        addToLibrary.setMaxWidth(885);
-        bottom.add(addToLibrary, 1, 0, 2, 1);
+        addToLibrary.setMinWidth(435);
+        addToLibrary.setMaxWidth(435);
+        bottom.add(addToLibrary, 1, 0, 1, 1);
         addToLibrary.setDisable(true);
         addToItunes = new Button("ADD TO iTUNES");
         addToItunes.setDisable(true);
-        addToItunes.setMinWidth(1090);
-        addToItunes.setMaxWidth(1090);
-        bottom.add(addToItunes, 0, 1, 7, 1);
+        addToItunes.setMinWidth(435);
+        addToItunes.setMaxWidth(435);
+        bottom.add(addToItunes, 2, 0, 1, 1);
 
         GridPane convertAndRelocate = new GridPane();
         convertAndRelocate.setHgap(10);
@@ -100,16 +104,19 @@ public class LocalMusicManagerView extends GridPane {
         relocateMP3.setMinWidth(265);
         relocateMP3.setMaxWidth(265);
         convertAndRelocate.add(relocateMP3, 3, 0);
-        bottom.add(convertAndRelocate, 0, 2, 7, 1);
+        bottom.add(convertAndRelocate, 0, 1, 7, 1);
 
         completeAllActions = new Button("COMPLETE ALL ACTIONS");
+        completeAllActions.setFont(new Font("Lucida Sans Regular", 12));
+        completeAllActions.setStyle("-fx-background-color: rgb(38, 135, 251); -fx-text-fill: white;");
         completeAllActions.setMinWidth(1090);
         completeAllActions.setDisable(true);
-        bottom.add(completeAllActions, 0, 3, 7, 1);
+        bottom.add(completeAllActions, 0, 2, 7, 1);
 
         add(bottom, 0, 2);
     }
 
+    public ScrollPane getMiddleScrollPane() { return middleScrollPane; }
     public Button getAddToQueue() { return addToQueue; }
     public Button getAddToLibrary() { return addToLibrary; }
     public Button getAddToItunes() { return addToItunes; }
@@ -144,8 +151,8 @@ public class LocalMusicManagerView extends GridPane {
         middleScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         middleScrollPane.setMinWidth(1090);
         middleScrollPane.setMaxWidth(1090);
-        middleScrollPane.setMinHeight(300);
-        middleScrollPane.setMaxHeight(300);
+        middleScrollPane.setMinHeight(355);
+        middleScrollPane.setMaxHeight(355);
         middleScrollPane.setContent(middle);
         add(middleScrollPane, 0, 1);
 
@@ -239,6 +246,7 @@ public class LocalMusicManagerView extends GridPane {
     }
 
     public void disableAll() {
+        middleScrollPane.setDisable(true);
         addToQueue.setDisable(true);
         addToLibrary.setDisable(true);
         addToItunes.setDisable(true);

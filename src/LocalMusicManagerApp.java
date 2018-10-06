@@ -82,6 +82,7 @@ public class LocalMusicManagerApp extends Application {
         view.getAddToLibrary().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                view.getMiddleScrollPane().setDisable(true);
                 view.getAddToQueue().setDisable(true);
                 view.getAddToLibrary().setDisable(true);
                 view.getCompleteAllActions().setDisable(true);
