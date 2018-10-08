@@ -23,8 +23,8 @@ The basic control flow of this program is based on how I organize my own music l
 * The program will wait for iTunes to finish all conversions, then give one of the two following options:
   * If the files have been converted to AAC format, it will give the option to copy the files to your phone directory, and then another option to copy the files to your PC directory.
   * If the files have been converted to MP3 format, it will give the option to rename the files for use on a car stereo as follows:
-    * `Track Number Song Name.mp3` --> `Artist - Song Name.mp3`
-    * For example: `01 Call Out My Name.mp3` --> `The Weeknd - Call Out My Name.mp3`
+    * `Track Number Song Name.mp3` &rarr; `Artist - Song Name.mp3`
+    * For example: `01 Call Out My Name.mp3` &rarr; `The Weeknd - Call Out My Name.mp3`
     * I use .mp3 files to play on my car stereo, so this naming convention is nicer to display than the iTunes standard.
 * Before exiting out of the conversion dialog, the user will be presented with the option to delete the converted tracks from iTunes.
 * A button for relocating the converted files will then be available, which is necessary to start another conversion process, since iTunes uses the same directory for conversion.
