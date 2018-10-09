@@ -9,6 +9,8 @@ Supported archive file types include `.zip`, `.rar`, and `.7z`, while supported 
 
 The basic control flow of this program is based on how I organize my own music library:
 
+![Main Screen](img/MainScreen.PNG)
+
 * To queue up an archive or audio file, press the "ADD TO QUEUE" button and then press "BROWSE".
 * You must select a release format for all queued up files before being able to add to your library directory. You can also set Artist, Album Artist, and Genre tags for each queued up file, but it is not necessary.
 * All archive files are extracted into a library directory based on the release format as selected through the UI. Audio files can only be marked as a single or an unreleased track. Release formats are as follows:
