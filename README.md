@@ -11,7 +11,7 @@ The basic control flow of this program is based on how I organize my own music l
 
 ![Main Screen](img/MainScreen.PNG)
 
-* To queue up an archive or audio file, press the "ADD TO QUEUE" button and then press "BROWSE".
+* To queue up an archive or audio file, press the "ADD TO QUEUE". A new row will appear in the scroll pane. You can select the desired file by pressing the "BROWSE" button.
 * You must select a release format for all queued up files before being able to add to your library directory. You can also set Artist, Album Artist, and Genre tags for each queued up file, but it is not necessary.
 * All archive files are extracted into a library directory based on the release format as selected through the UI. Audio files can only be marked as a single or an unreleased track. Release formats are as follows:
   * Album
@@ -33,7 +33,9 @@ The basic control flow of this program is based on how I organize my own music l
 * A sequence of these actions can be triggered with the "Complete All Actions" button. This button also deletes the tracks from the library directory from iTunes and instead adds the converted tracks copied into the PC directory to iTunes.
   * I generally only trigger the actions individually if I want to verify the tags in iTunes before converting.
 
-All directories are read from a setup file of XML type. If the setup file is incomplete, any directories listed in the setup file are invalid, or the setup file is unavailable, a dialog will appear requesting the user to set the directories.
+All directories are read from a setup file of XML type. If the setup file is incomplete, any directories listed in the setup file are invalid, or the setup file is unavailable, a dialog will appear requesting the user to set the directories:
+
+![Setup Dialog](img/SetupDialog.PNG)
 
 This program is written in Java, using JavaFX for the UI. All scripting for communication between the Java application and iTunes is done using Python.
 
