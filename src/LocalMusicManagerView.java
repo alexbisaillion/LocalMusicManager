@@ -203,36 +203,6 @@ public class LocalMusicManagerView extends GridPane {
                 }
             });
 
-            nf.getView().getArtist().setOnKeyReleased(new EventHandler<KeyEvent>() {
-                @Override
-                public void handle(KeyEvent event) {
-                    if(nf.getView().getArtist().getText().length() > 0) {
-                        nf.setNewArtistTag(nf.getView().getArtist().getText());
-                    }
-                    update();
-                }
-            });
-
-            nf.getView().getAlbumArtist().setOnKeyReleased(new EventHandler<KeyEvent>() {
-                @Override
-                public void handle(KeyEvent event) {
-                    if(nf.getView().getAlbumArtist().getText().length() > 0) {
-                        nf.setNewAlbumArtistTag(nf.getView().getAlbumArtist().getText());
-                    }
-                    update();
-                }
-            });
-
-            nf.getView().getGenre().setOnKeyReleased(new EventHandler<KeyEvent>() {
-                @Override
-                public void handle(KeyEvent event) {
-                    if(nf.getView().getGenre().getText().length() > 0) {
-                        nf.setNewGenreTag(nf.getView().getGenre().getText());
-                    }
-                    update();
-                }
-            });
-
             nf.getView().getDelete().setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
@@ -241,7 +211,6 @@ public class LocalMusicManagerView extends GridPane {
                     update();
                 }
             });
-
         }
     }
 

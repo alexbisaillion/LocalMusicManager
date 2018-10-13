@@ -502,6 +502,15 @@ public class LocalMusicManagerApp extends Application {
 
     private void addToLibrary() {
         for(NewFile nf: model) {
+            if(nf.getView().getArtist().getText().length() > 0) {
+                nf.setNewArtistTag(nf.getView().getArtist().getText());
+            }
+            if(nf.getView().getAlbumArtist().getText().length() > 0) {
+                nf.setNewAlbumArtistTag(nf.getView().getAlbumArtist().getText());
+            }
+            if(nf.getView().getGenre().getText().length() > 0) {
+                nf.setNewGenreTag(nf.getView().getGenre().getText());
+            }
             switch(nf.getExtension()) {
                 case ".zip":
                     try {
