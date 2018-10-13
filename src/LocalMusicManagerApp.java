@@ -464,6 +464,7 @@ public class LocalMusicManagerApp extends Application {
         view.getCompleteAllActions().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                Date addToLibraryDate = new Date();
                 view.disableAll();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Processing");
@@ -478,11 +479,46 @@ public class LocalMusicManagerApp extends Application {
                         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                     }
                 };
+                Runnable confirmCompleteRemainingActions = new Runnable() {
+                    @Override
+                    public void run() {
+                        Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION, "Confirm the tags are correct in iTunes before continuing.", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                        alert2.showAndWait();
+                        if (alert2.getResult() == ButtonType.YES) {
+                            Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
+                            alert3.setTitle("Processing");
+                            alert3.setHeaderText("Completing remaining actions...");
+                            alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+                            alert3.show();
+                            Runnable update2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    alert3.setContentText("Done!");
+                                    alert3.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+                                }
+                            };
+                            Runnable r2 = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        completeRemainingActions(addToLibraryDate);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    Platform.runLater(update2);
+                                }
+                            };
+                            Thread t2 = new Thread(r2);
+                            t2.start();
+                        }
+                    }
+                };
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            completeAllActions();
+                            addToLibraryAndItunes();
+                            Platform.runLater(confirmCompleteRemainingActions);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -878,11 +914,12 @@ public class LocalMusicManagerApp extends Application {
         }
     }
 
-    private void completeAllActions() throws Exception {
-        Date addToLibraryDate = new Date();
+    private void addToLibraryAndItunes() throws IOException {
         addToLibrary();
         addToItunes();
+    }
 
+    private void completeRemainingActions(Date addToLibraryDate) throws Exception {
         setEncoder("AAC Encoder");
         Date convertToAACDate = new Date();
         convert();

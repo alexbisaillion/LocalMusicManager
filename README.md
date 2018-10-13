@@ -30,7 +30,7 @@ The basic control flow of this program is based on how I organize my own music l
     * I use .mp3 files to play on my car stereo, so this naming convention is nicer to display than the iTunes standard.
 * Before exiting out of the conversion dialog, the user will be presented with the option to delete the converted tracks from iTunes.
 * A button for relocating the converted files will then be available, which is necessary to start another conversion process, since iTunes uses the same directory for conversion.
-* A sequence of these actions can be triggered with the "Complete All Actions" button. This button also deletes the tracks from the library directory from iTunes and instead adds the converted tracks copied into the PC directory to iTunes.
+* A sequence of these actions can be triggered with the "Complete All Actions" button. There is a break between adding to iTunes and starting the conversion process to allow the tags to be verified by the user in iTunes. This button also deletes the tracks from the library directory from iTunes and instead adds the converted tracks copied into the PC directory to iTunes.
   * I generally only trigger the actions individually if I want to verify the tags in iTunes before converting.
 
 All directories are read from a setup file of XML type. If the setup file is incomplete, any directories listed in the setup file are invalid, or the setup file is unavailable, a dialog will appear requesting the user to set the directories:
