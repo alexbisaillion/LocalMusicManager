@@ -532,7 +532,7 @@ public class LocalMusicManagerApp extends Application {
 
         primaryStage.setTitle("Local Music Manager");
         primaryStage.setResizable(false);
-        primaryStage.setScene(new Scene(view, 1100, 500));
+        primaryStage.setScene(new Scene(view, 1110, 510));
         primaryStage.show();
     }
 
