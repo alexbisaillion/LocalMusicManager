@@ -26,7 +26,7 @@ The basic control flow of this program is based on how I organize my own music l
   * If the files have been converted to AAC format, it will give the option to copy the files to your phone directory, and then another option to copy the files to your PC directory.
   * If the files have been converted to MP3 format, it will give the option to rename the files for use on a car stereo as follows:
     * `Track Number Song Name.mp3` &rarr; `Artist - Song Name.mp3`
-    * For example: `01 Call Out My Name.mp3` &rarr; `The Weeknd - Call Out My Name.mp3`
+    * For example: `01 King Of The Fall.mp3` &rarr; `The Weeknd - King Of The Fall.mp3`
     * I use .mp3 files to play on my car stereo, so this naming convention is nicer to display than the iTunes standard.
 * Before exiting out of the conversion dialog, the user will be presented with the option to delete the converted tracks from iTunes.
 * A button for relocating the converted files will then be available, which is necessary to start another conversion process, since iTunes uses the same directory for conversion.
@@ -43,9 +43,10 @@ This program is written in Java, using JavaFX for the UI. All scripting for comm
 
 ### Requirements
 
-* [JDK 8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* [Python 3.7.0](https://www.python.org/downloads/release/python-370/)
-* [iTunes 12.9.0.167](https://www.apple.com/itunes/download/)
+* [JDK 12](https://www.oracle.com/technetwork/java/javase/downloads/jdk12-downloads-5295953.html)
+* [JavaFX 12](https://gluonhq.com/products/javafx/)
+* [Python 3.7.4](https://www.python.org/downloads/release/)
+* [iTunes 12.9.6.3](https://www.apple.com/itunes/download/)
 * [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/)
 * [Apache Commons IO](https://commons.apache.org/proper/commons-io/)
 * [JAudioTagger](http://www.jthink.net/jaudiotagger/)
